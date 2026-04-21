@@ -8,4 +8,3 @@ gunicorn
 psycopg2-binary
 aiohttp
 google-generativeai
-google-genai

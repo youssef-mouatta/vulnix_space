@@ -8,7 +8,7 @@ class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(150), unique=True, nullable=False)
     email = db.Column(db.String(255), unique=True, nullable=True)  # Used for Stripe webhook lookup
-    password = db.Column(db.String(150), nullable=False)
+    password = db.Column(db.String(255), nullable=False)
     tier = db.Column(db.String(20), default='Free')
     api_key = db.Column(db.String(100), unique=True, nullable=True)
     scans = db.relationship('ScanResult', backref='user', lazy=True)
