@@ -1,0 +1,323 @@
+:root {
+  --bg-darker: #020617;
+  --bg-card: #1e293b;
+  --txt-slate: #e2e8f0;
+  --clr-blue: #3b82f6;
+  --clr-red: #ef4444;
+  --clr-amber: #f59e0b;
+  --clr-green: #22c55e;
+}
+
+.report-elite-container {
+  min-height: 100vh;
+  padding-bottom: 50px;
+}
+
+.container {
+  max-width: 1100px;
+  margin: 40px auto;
+  padding: 0 20px;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.header h1 {
+  font-size: 3rem;
+  font-weight: 900;
+  background: linear-gradient(to right, #fff, #94a3b8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 10px;
+}
+
+.header p {
+  color: var(--clr-blue);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.9rem;
+  letter-spacing: 0.1em;
+}
+
+.score {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.score h1 {
+  font-size: 5rem;
+  font-weight: 900;
+  margin: 0;
+}
+
+.risk {
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-size: 1rem;
+}
+.risk.low { color: var(--clr-green); }
+.risk.medium { color: var(--clr-amber); }
+.risk.high { color: var(--clr-red); }
+
+.ai-box {
+  background: rgba(59, 130, 246, 0.1);
+  padding: 25px;
+  border-left: 5px solid var(--clr-blue);
+  border-radius: 12px;
+  margin-bottom: 40px;
+  font-weight: 600;
+  color: #93c5fd;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.graph-box {
+  background: #030a1e;
+  padding: 30px;
+  border-radius: 20px;
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  margin-bottom: 40px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(99, 102, 241, 0.05);
+}
+
+.graph-box::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.5), transparent);
+  animation: scanline 4s linear infinite;
+  z-index: 10;
+}
+
+@keyframes scanline {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(500%); }
+}
+
+.graph-box h2 {
+  font-size: 0.8rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  color: #6366f1;
+  margin-bottom: 25px;
+  letter-spacing: 0.2em;
+  display: flex;
+  align-items: center;
+}
+
+.graph-box h2::before {
+  content: "";
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background: #6366f1;
+  border-radius: 50%;
+  margin-right: 12px;
+  box-shadow: 0 0 10px #6366f1;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(79, 70, 229, 0.7); }
+  70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(79, 70, 229, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(79, 70, 229, 0); }
+}
+
+#graph {
+  height: 400px;
+  width: 100%;
+  background: radial-gradient(circle at center, #0f172a 0%, #030a1e 100%);
+  border-radius: 12px;
+}
+
+.priority {
+  margin-bottom: 40px;
+}
+
+.priority h2 {
+  font-size: 1rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+}
+
+.priority-item {
+  background: linear-gradient(90deg, #7f1d1d, #450a0a);
+  padding: 15px 25px;
+  margin-bottom: 10px;
+  border-radius: 10px;
+  font-weight: 800;
+  border-left: 4px solid var(--clr-red);
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+}
+
+.priority-item::before {
+  content: "FIX_NOW";
+  font-size: 9px;
+  background: var(--clr-red);
+  color: white;
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-right: 15px;
+}
+
+.chains {
+  margin-bottom: 40px;
+}
+
+.chain {
+  background: #1e293b;
+  padding: 15px;
+  border-radius: 10px;
+  border: 1px dashed rgba(255,255,255,0.1);
+  font-weight: 700;
+  color: #cbd5e1;
+  margin-bottom: 10px;
+}
+
+.card {
+  background: var(--bg-card);
+  padding: 30px;
+  margin-top: 20px;
+  border-radius: 16px;
+  border-left: 6px solid transparent;
+  transition: transform 0.2s;
+}
+
+.card:hover { transform: scale(1.01); }
+
+.card.high { border-left-color: var(--clr-red); }
+.card.medium { border-left-color: var(--clr-amber); }
+.card.low { border-left-color: var(--clr-green); }
+
+.title {
+  font-size: 1.4rem;
+  font-weight: 900;
+  margin-bottom: 10px;
+}
+
+.fix {
+  background: rgba(34, 197, 94, 0.1);
+  padding: 12px 20px;
+  border-radius: 10px;
+  margin-top: 20px;
+  color: #86efac;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.poc {
+  background: #000;
+  padding: 20px;
+  margin-top: 20px;
+  border-radius: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.poc code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.8rem;
+  color: #a5b4fc;
+}
+
+.poc button {
+  background: var(--clr-blue);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 800;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   LIGHT MODE OVERRIDES
+   Targets the report page whose inner styles are hardcoded
+   for dark mode. html:not(.dark) = light mode is active.
+   ═══════════════════════════════════════════════════════════ */
+
+html:not(.dark) body {
+  background: #f1f5f9 !important;
+  color: #0f172a !important;
+}
+
+/* Page wrapper */
+html:not(.dark) .max-w-7xl {
+  color: #0f172a;
+}
+
+/* ── Glass cards ── */
+html:not(.dark) .glass-card {
+  background: rgba(255, 255, 255, 0.85) !important;
+  border-color: rgba(0, 0, 0, 0.1) !important;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.07);
+}
+
+html:not(.dark) .glass-card:hover {
+  background: rgba(255, 255, 255, 0.97) !important;
+  border-color: rgba(99, 102, 241, 0.4) !important;
+}
+
+/* ── All white text → near black ── */
+html:not(.dark) .text-white {
+  color: #0f172a !important;
+}
+
+/* ── Grey text shades → dark greys ── */
+html:not(.dark) .text-gray-200 { color: #1e293b !important; }
+html:not(.dark) .text-gray-400 { color: #475569 !important; }
+html:not(.dark) .text-gray-500 { color: #64748b !important; }
+html:not(.dark) .text-gray-600 { color: #334155 !important; }
+
+/* ── Dark backgrounds used inline → light equivalents ── */
+html:not(.dark) .bg-black\/20   { background: rgba(0,0,0,0.04) !important; }
+html:not(.dark) .bg-gray-900    { background: #f8fafc !important; }
+html:not(.dark) .bg-gray-900\/50{ background: rgba(248,250,252,0.8) !important; }
+html:not(.dark) .bg-gray-800    { background: #e2e8f0 !important; }
+html:not(.dark) .bg-black\/20   { background: rgba(0,0,0,0.03) !important; }
+
+/* ── Indigo tinted boxes ── */
+html:not(.dark) .bg-indigo-900\/40 { background: rgba(99,102,241,0.12) !important; }
+html:not(.dark) .bg-indigo-950\/30 { background: rgba(99,102,241,0.08) !important; }
+
+/* ── Dividers ── */
+html:not(.dark) .bg-gray-800.h-16,
+html:not(.dark) .bg-gray-800.w-px { background: #cbd5e1 !important; }
+
+/* ── AI summary border ── */
+html:not(.dark) .border-indigo-600 { border-color: #6366f1 !important; }
+
+/* ── PoC / code blocks ── */
+html:not(.dark) .poc  { background: #f1f5f9 !important; }
+html:not(.dark) code  { color: #4338ca !important; }
+
+/* ── The attack graph background ── */
+html:not(.dark) #graph { background: #f8fafc !important; }
+
+/* ── Severity left-bar colours stay vivid (no change needed) ── */
+
+/* ── Gated / upgrade cards ── */
+html:not(.dark) .border-dashed { border-color: #a5b4fc !important; }
+html:not(.dark) .bg-gradient-to-t { background: linear-gradient(to top, #e2e8f0, rgba(241,245,249,0.5), transparent) !important; }
+
+/* ── Fix / remedy box ── */
+html:not(.dark) .bg-emerald-500\/10 { background: rgba(16,185,129,0.08) !important; }
+
+/* ── Network recon panel port badges backgrounds ── */
+html:not(.dark) .bg-red-500\/10   { background: rgba(239,68,68,0.07) !important; }
+html:not(.dark) .bg-amber-500\/10 { background: rgba(245,158,11,0.07) !important; }
+html:not(.dark) .bg-emerald-500\/10 { background: rgba(16,185,129,0.07) !important; }
+
+/* ── Upgrade button stays dark for contrast ── */
+html:not(.dark) .upgrade-button { color: #fff !important; }

@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="relative overflow-hidden bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
+    <!-- Background Gradients -->
+    <div class="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80" aria-hidden="true">
+        <div class="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem]"></div>
+    </div>
+    
+    <!-- Hero Section -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-16 text-center">
+        <div class="inline-flex items-center rounded-full px-4 py-1.5 text-sm font-semibold text-indigo-600 dark:text-indigo-400 ring-1 ring-inset ring-indigo-600/20 dark:ring-indigo-400/30 mb-8 animate-bounce backdrop-blur-sm">
+            <span>✨ Vulnix v2.0 — Risk Intelligence Engine is live</span>
+        </div>
+        <h1 class="mx-auto max-w-4xl font-display text-5xl font-extrabold tracking-tight text-gray-900 dark:text-white sm:text-7xl">
+            Detect Website Vulnerabilities in <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-purple-600">Seconds</span> with Vulnix.
+        </h1>
+        <p class="mx-auto mt-6 max-w-2xl text-lg tracking-tight text-gray-600 dark:text-gray-300">
+            Vulnix scans your site for real vulnerabilities, correlates attack chains, and delivers copy-paste fixes — powered by AI. No security degree needed.
+        </p>
+        <div class="mt-10 flex flex-col sm:flex-row justify-center gap-4">
+            {% if current_user.is_authenticated %}
+                <a href="{{ url_for('user.dashboard') }}" class="group relative rounded-2xl bg-indigo-600 px-8 py-4 text-sm font-semibold text-white hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 transition-all shadow-[0_0_20px_rgba(79,70,229,0.4)] hover:shadow-[0_0_30px_rgba(79,70,229,0.6)] hover:-translate-y-1">
+                    Go to Dashboard <span aria-hidden="true" class="inline-block transition-transform group-hover:translate-x-1">→</span>
+                </a>
+            {% else %}
+                <a href="{{ url_for('auth.register') }}" class="group relative rounded-2xl bg-indigo-600 px-8 py-4 text-sm font-semibold text-white hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 transition-all shadow-[0_0_20px_rgba(79,70,229,0.4)] hover:shadow-[0_0_30px_rgba(79,70,229,0.6)] hover:-translate-y-1">
+                    Start Free Scan <span aria-hidden="true" class="inline-block transition-transform group-hover:translate-x-1">→</span>
+                </a>
+                <a href="#features" class="rounded-2xl px-8 py-4 text-sm font-semibold text-gray-900 dark:text-white ring-1 ring-inset ring-gray-300 dark:ring-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all">
+                    View Features
+                </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Dashboard Mockup -->
+    <div class="mx-auto max-w-7xl px-6 lg:px-8 pb-20 relative z-10">
+        <div class="rounded-2xl bg-gray-900/5 dark:bg-white/5 p-2 ring-1 ring-inset ring-gray-900/10 dark:ring-white/10 lg:-m-4 lg:rounded-[2rem] lg:p-4 shadow-2xl backdrop-blur-3xl transform transition hover:scale-[1.01] duration-500">
+            <div class="rounded-xl bg-white dark:bg-gray-900 shadow-2xl ring-1 ring-gray-900/10 dark:ring-gray-800 overflow-hidden">
+                <div class="flex items-center px-4 py-3 border-b border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/50">
+                    <div class="flex space-x-2">
+                        <div class="w-3 h-3 rounded-full bg-red-400"></div>
+                        <div class="w-3 h-3 rounded-full bg-yellow-400"></div>
+                        <div class="w-3 h-3 rounded-full bg-green-400"></div>
+                    </div>
+                </div>
+                <!-- Mockup Content -->
+                <div class="p-6 grid grid-cols-1 md:grid-cols-4 gap-6">
+                    <div class="md:col-span-1 space-y-4">
+                        <div class="h-24 bg-gray-100 dark:bg-gray-800 rounded-xl animate-pulse"></div>
+                        <div class="h-48 bg-gray-100 dark:bg-gray-800 rounded-xl animate-pulse"></div>
+                    </div>
+                    <div class="md:col-span-3 space-y-4">
+                        <div class="h-12 bg-indigo-50 dark:bg-indigo-900/20 rounded-xl"></div>
+                        <div class="h-64 bg-gray-100 dark:bg-gray-800 rounded-xl animate-pulse"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Trust / Features Section -->
+    <div id="features" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 relative z-10">
+        <div class="text-center mb-16">
+            <h2 class="text-xs font-semibold text-indigo-600 dark:text-indigo-400 tracking-widest uppercase">Built for Speed</h2>
+            <p class="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 dark:text-white sm:text-4xl">
+                Everything you need to ship securely with Vulnix.
+            </p>
+        </div>
+        <div class="grid grid-cols-1 gap-8 sm:grid-cols-3 max-w-6xl mx-auto">
+            <div class="bg-white dark:bg-gray-800/80 backdrop-blur-xl p-8 rounded-[2rem] shadow-sm border border-gray-100 dark:border-gray-700/50 hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 group">
+                <div class="w-14 h-14 bg-indigo-50 dark:bg-indigo-900/30 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                    <i class="fa-solid fa-bolt text-2xl text-indigo-600 dark:text-indigo-400"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3">Instant Scanning</h3>
+                <p class="text-gray-500 dark:text-gray-400">Deep inspection of HTTP headers, framework misconfigurations, and SSL certificates instantly.</p>
+            </div>
+            <div class="bg-white dark:bg-gray-800/80 backdrop-blur-xl p-8 rounded-[2rem] shadow-sm border border-gray-100 dark:border-gray-700/50 hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 group">
+                <div class="w-14 h-14 bg-purple-50 dark:bg-purple-900/30 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                    <i class="fa-solid fa-robot text-2xl text-purple-600 dark:text-purple-400"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3">AI Remediation</h3>
+                <p class="text-gray-500 dark:text-gray-400">Don't guess how to fix issues. Get direct, copy-pasteable code snippets context-aware of your tech stack.</p>
+            </div>
+            <div class="bg-white dark:bg-gray-800/80 backdrop-blur-xl p-8 rounded-[2rem] shadow-sm border border-gray-100 dark:border-gray-700/50 hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 group">
+                <div class="w-14 h-14 bg-green-50 dark:bg-green-900/30 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                    <i class="fa-solid fa-shield-halved text-2xl text-green-600 dark:text-green-400"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3">Threat Detection</h3>
+                <p class="text-gray-500 dark:text-gray-400">Track and visualize vulnerabilities over time with gorgeous dashboard analytics and PDF reports.</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bottom Gradients -->
+    <div class="absolute inset-x-0 top-[calc(100%-13rem)] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[calc(100%-30rem)]" aria-hidden="true">
+        <div class="relative left-[calc(50%+3rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 bg-gradient-to-tr from-[#9089fc] to-[#ff80b5] opacity-30 sm:left-[calc(50%+36rem)] sm:w-[72.1875rem]"></div>
+    </div>
+</div>
+{% endblock %}

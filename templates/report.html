@@ -1,0 +1,265 @@
+{% extends "base.html" %}
+
+{% block title %}Vulnix Intelligence — {{ target }}{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="/static/style.css">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;900&family=JetBrains+Mono&display=swap"
+  rel="stylesheet">
+<script src="https://unpkg.com/cytoscape/dist/cytoscape.min.js"></script>
+<style>
+  :root {
+    --elite-primary: #6366f1;
+    --elite-bg: #030712;
+    --elite-surface: #111827;
+    --elite-border: rgba(255, 255, 255, 0.08);
+    --elite-text: #f3f4f6;
+  }
+
+  body {
+    background: var(--elite-bg);
+    color: var(--elite-text);
+    font-family: 'Outfit', sans-serif;
+  }
+
+  .glass-card {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--elite-border);
+    border-radius: 24px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .risk-badge {
+    padding: 6px 16px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .risk-high {
+    background: #ef4444;
+    color: white;
+    box-shadow: 0 0 20px rgba(239, 68, 68, 0.4);
+  }
+
+  .risk-medium {
+    background: #f59e0b;
+    color: white;
+  }
+
+  .risk-low {
+    background: #10b981;
+    color: white;
+  }
+
+  .glow-text {
+    text-shadow: 0 0 30px rgba(99, 102, 241, 0.4);
+  }
+
+  .upgrade-button {
+    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+    box-shadow: 0 10px 25px -5px rgba(79, 70, 229, 0.4);
+    transition: all 0.2s;
+  }
+
+  .upgrade-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 15px 30px -5px rgba(79, 70, 229, 0.6);
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto px-6 py-16">
+
+  <!-- 1. HEADER UPGRADE -->
+  <div class="mb-20">
+    <div class="flex flex-col md:flex-row items-baseline justify-between gap-6 mb-8">
+      <div>
+        <div class="flex items-center gap-4 mb-4">
+          <span class="risk-badge risk-{{ risk|lower }}">Target Risk: {{ risk }}</span>
+          <span
+            class="px-5 py-2 bg-white/5 border border-white/10 rounded-full text-xl font-black tracking-widest text-[#fbbf24] shadow-[0_0_25px_rgba(251,191,36,0.2)]">
+            SCORE: <span class="text-xl">{{ score }}</span>/100
+          </span>
+        </div>
+        <h1 class="text-6xl font-black tracking-tighter leading-none glow-text">
+          {% if risk|lower == 'high' %}
+          CRITICAL BREACH <span class="text-red-500">VECTORS FOUND</span>
+          {% elif risk|lower == 'medium' %}
+          SIGNIFICANT <span class="text-amber-500">WEAKNESSES IDENTIFIED</span>
+          {% else %}
+          SURFACE AREA <span class="text-emerald-500">LOCKED DOWN</span>
+          {% endif %}
+        </h1>
+        <p class="font-mono text-indigo-400 mt-6 text-lg flex items-center">
+          <span class="w-3 h-3 bg-indigo-500 rounded-full mr-4 animate-ping"></span>
+          {{ target }}
+        </p>
+      </div>
+    </div>
+
+    <!-- 2. AI SUMMARY (REALISTIC & DIRECT) -->
+    <div class="glass-card p-10 border-l-8 border-indigo-600">
+      <div class="flex items-start gap-8">
+        <div class="text-4xl">🧠</div>
+        <div>
+          <h3 class="text-[14px] font-black text-indigo-500 uppercase tracking-[0.3em] mb-3">AI Intelligence Objective
+          </h3>
+          <p class="text-2xl font-bold text-grey leading-snug">{{ ai_summary }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 mb-20">
+
+    <!-- 3. FIX FIRST SECTION -->
+    <div class="lg:col-span-5">
+      <h2 class="text-xs font-black text-gray-400 uppercase tracking-[0.2em] mb-8">🚨 Priority Remediation (Fix First)
+      </h2>
+      <div class="space-y-6">
+        {% for issue in issues[:2] %}
+        <div class="glass-card p-6 border-l-4 border-red-500 hover:bg-white/5 transition-colors">
+          <div class="font-black text-white text-lg mb-2">{{ issue.name }}</div>
+          <p class="text-sm text-gray-500 leading-tight">{{ issue.impact }}</p>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- 4. ATTACK GRAPH (PROMINENT) -->
+    <div class="lg:col-span-7">
+      <div class="glass-card p-8 h-full flex flex-col group relative overflow-hidden">
+        <div class="flex justify-between items-center mb-6">
+          <h2 class="text-xs font-black text-indigo-900 uppercase tracking-[0.2em]">💥 Proposed Attack Chain</h2>
+          <span class="text-[15px] px-4 py-2 bg-indigo-1000 text-indigo-500 rounded font-mono">Live Simulation</span>
+        </div>
+        <div id="graph" class="flex-grow min-h-[500px] rounded-2xl bg-black/50 border border-white/10"></div>
+
+        {% if user_tier == 'free' %}
+        <div
+          class="absolute inset-0 bg-gray-900/40 backdrop-blur-[3px] flex items-center justify-center pointer-events-none">
+          <div class="text-center p-8">
+            <div class="text-3xl mb-4">🔒</div>
+            <p class="text-xs font-black text-white uppercase tracking-widest">Advanced Simulations Gated</p>
+          </div>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. VULNERABILITY FORMAT (SaaS OPTIMIZED) -->
+  <div class="mb-20">
+    <h2 class="text-xs font-black text-gray-200 uppercase tracking-[0.3em] mb-10">🚨 Security Inventory</h2>
+
+    <div class="space-y-10">
+      {% for i in issues if i.category != "Exploit Chain" %}
+      {% if user_tier == 'free' and loop.index > 3 %}
+      {% if loop.index == 4 %}
+      <!-- 7. UPGRADE BLOCK FOR FREE USERS -->
+      <div
+        class="glass-card p-16 text-center border-dashed border-2 border-indigo-900/50 bg-gradient-to-b from-transparent to-indigo-950/20">
+        <div class="text-5xl mb-6">🛑</div>
+        <h3 class="text-3xl font-black text-white mb-4">Uncover The Full Attack Surface</h3>
+        <p class="text-gray-400 max-w-xl mx-auto mb-10 text-lg">🔒 Advanced exploit chains and attack simulations are
+          locked. Attackers see everything; your team should too.</p>
+        <a href="/pricing"
+          class="upgrade-button inline-block px-12 py-5 rounded-2xl text-white font-black uppercase tracking-widest text-sm">Upgrade
+          to Intelligence Pro</a>
+      </div>
+      {% endif %}
+      {% else %}
+      <div class="glass-card p-10 relative overflow-hidden group">
+        <!-- Severity Bar -->
+        <div class="w-1.5 h-full absolute left-0 top-0 
+                    {% if i.severity|upper == 'HIGH' %} bg-red-500
+                    {% elif i.severity|upper == 'MEDIUM' %} bg-amber-500
+                    {% else %} bg-emerald-500 {% endif %}"></div>
+
+        <div class="flex flex-col md:flex-row gap-12">
+
+          <!-- Finding Info -->
+          <div class="flex-grow">
+            <div class="flex items-center gap-4 mb-4">
+              <span class="text-[10px] font-black px-2 py-1 bg-white/5 text-gray-400 rounded uppercase tracking-widest">
+                {% if user_tier == 'free' %}🔒{% endif %} {{ i.severity }}
+              </span>
+              <span class="text-[10px] font-black text-indigo-500 uppercase tracking-widest">{{ i.category }}</span>
+            </div>
+
+            <h3 class="text-3xl font-black text-white mb-6 group-hover:text-indigo-400 transition-colors">{{ i.name }}
+            </h3>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+              <div>
+                <p class="text-[10px] font-black text-red-400 uppercase tracking-widest mb-2">💥 Impact</p>
+                <p class="text-gray-200 font-medium leading-relaxed">{{ i.impact }}</p>
+              </div>
+              <div>
+                <p class="text-[10px] font-black text-emerald-400 uppercase tracking-widest mb-2">✅ Fix</p>
+                <p class="text-gray-200 font-medium leading-relaxed">{{ i.fix }}</p>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between pt-6 border-t border-white/5">
+              <div class="flex items-center gap-6">
+                <div>
+                  <span class="text-[9px] font-black text-gray-500 uppercase tracking-widest">🧠 Confidence</span>
+                  <div class="text-sm font-bold text-white">{{ i.confidence }}</div>
+                </div>
+                {% if i.owasp %}
+                <div>
+                  <span class="text-[9px] font-black text-gray-500 uppercase tracking-widest">🛡️ OWASP</span>
+                  <div class="text-sm font-bold text-white">{{ i.owasp }}</div>
+                </div>
+                {% endif %}
+              </div>
+
+              {% if i.poc and user_tier != 'free' %}
+              <div class="flex items-center gap-4 bg-black/60 px-4 py-2 rounded-xl border border-white/10">
+                <code class="text-xs text-indigo-400 font-mono">{{ i.poc }}</code>
+                <button onclick="copyPoC(this)" class="text-gray-500 hover:text-white transition-colors">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3">
+                    </path>
+                  </svg>
+                </button>
+              </div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+
+</div>
+
+<script src="/static/app.js"></script>
+
+<script>
+  const issues = {{ issues | tojson | safe }};
+  const isFree = {{ (user_tier == 'free') | tojson }};
+
+  document.addEventListener('DOMContentLoaded', () => {
+    if (typeof renderGraph === 'function') {
+      renderGraph(issues, isFree);
+    }
+  });
+
+  function copyPoC(btn) {
+    const code = btn.previousElementSibling.innerText;
+    navigator.clipboard.writeText(code);
+    btn.classList.add('text-emerald-500');
+    setTimeout(() => btn.classList.remove('text-emerald-500'), 2000);
+  }
+</script>
+{% endblock %}

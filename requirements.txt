@@ -1,0 +1,10 @@
+flask
+requests
+flask-sqlalchemy
+flask-login
+beautifulsoup4
+python-dotenv
+gunicorn
+psycopg2-binary
+aiohttp
+google-generativeai
