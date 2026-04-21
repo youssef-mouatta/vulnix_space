@@ -25,6 +25,19 @@ def create_app():
     # Initialize Database
     init_db(app)
 
+    # Auto-Migration for Production (Fixes Password Length)
+    with app.app_context():
+        from sqlalchemy import text
+        try:
+            # Try to alter columns for Postgres (Render default)
+            db.session.execute(text('ALTER TABLE "user" ALTER COLUMN password TYPE VARCHAR(255);'))
+            db.session.commit()
+            print("Database migration: Expanded password column successfully.")
+        except Exception as e:
+            db.session.rollback()
+            # If it's SQLite or already fixed, this might fail, which is fine
+            print(f"Database migration info: {e}")
+
     # Security Headers Hook
     @app.after_request
     def set_security_headers(response):
