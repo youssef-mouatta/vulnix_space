@@ -29,13 +29,14 @@ def create_app():
     with app.app_context():
         from sqlalchemy import text
         try:
-            # Try to alter columns for Postgres (Render default)
-            db.session.execute(text('ALTER TABLE "user" ALTER COLUMN password TYPE VARCHAR(255);'))
-            db.session.commit()
-            print("Database migration: Expanded password column successfully.")
+            # Only run ALTER COLUMN on Postgres (SQLite doesn't support it and doesn't need it)
+            if 'postgresql' in str(db.engine.url):
+                db.session.execute(text('ALTER TABLE "user" ALTER COLUMN password TYPE VARCHAR(255);'))
+                db.session.commit()
+                print("Database migration: Expanded password column successfully (Postgres).")
         except Exception as e:
             db.session.rollback()
-            # If it's SQLite or already fixed, this might fail, which is fine
+            # If it's already fixed or another error, we don't want to crash the app
             print(f"Database migration info: {e}")
 
     # Security Headers Hook

@@ -20,9 +20,17 @@
         }
     </script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script> <!-- For Markdown rendering -->
     
     <style>
+        :root {
+            --brand-font: 'Outfit', sans-serif;
+            --mono-font: 'JetBrains Mono', monospace;
+        }
+        body { font-family: var(--brand-font); }
+        .font-mono { font-family: var(--mono-font); }
+        
         /* Prose dark mode fixes */
         .dark .prose { color: #d1d5db; }
         .dark .prose h1, .dark .prose h2, .dark .prose h3 { color: #f3f4f6; }
@@ -33,64 +41,60 @@
 <body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-200 font-sans antialiased flex flex-col min-h-screen transition-colors duration-200">
 
     <!-- Navigation -->
-    <nav class="bg-white dark:bg-gray-800 shadow dark:border-b dark:border-gray-700">
+    <nav class="sticky top-0 z-50 bg-white/80 dark:bg-black/80 backdrop-blur-xl border-b border-gray-100 dark:border-white/5 transition-all">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16">
+            <div class="flex justify-between h-20">
                 <div class="flex">
                     <div class="flex-shrink-0 flex items-center">
                         <a href="{{ url_for('main.index') }}" class="flex items-center" aria-label="Vulnix Home">
                             <!-- Vulnix Brand Logo SVG -->
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 60" height="38" aria-hidden="true">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 60" height="42" aria-hidden="true">
                                 <defs>
                                     <linearGradient id="shieldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                                        <stop offset="0%" style="stop-color:#38bdf8;stop-opacity:1" />
-                                        <stop offset="100%" style="stop-color:#7c3aed;stop-opacity:1" />
+                                        <stop offset="0%" style="stop-color:#6366f1;stop-opacity:1" />
+                                        <stop offset="100%" style="stop-color:#a855f7;stop-opacity:1" />
                                     </linearGradient>
                                     <linearGradient id="vGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                                        <stop offset="0%" style="stop-color:#60a5fa;stop-opacity:1" />
-                                        <stop offset="100%" style="stop-color:#a855f7;stop-opacity:1" />
+                                        <stop offset="0%" style="stop-color:#818cf8;stop-opacity:1" />
+                                        <stop offset="100%" style="stop-color:#c084fc;stop-opacity:1" />
                                     </linearGradient>
                                 </defs>
                                 <!-- Shield body -->
                                 <path d="M30 4 L52 12 L52 32 Q52 46 30 56 Q8 46 8 32 L8 12 Z"
-                                      fill="url(#shieldGrad)" opacity="0.15"/>
+                                      fill="url(#shieldGrad)" opacity="0.1"/>
                                 <path d="M30 4 L52 12 L52 32 Q52 46 30 56 Q8 46 8 32 L8 12 Z"
-                                      fill="none" stroke="url(#shieldGrad)" stroke-width="2.5"/>
+                                      fill="none" stroke="url(#shieldGrad)" stroke-width="2"/>
                                 <!-- V shape inside shield -->
                                 <path d="M17 16 L30 42 L43 16" fill="none"
-                                      stroke="url(#vGrad)" stroke-width="5"
+                                      stroke="url(#vGrad)" stroke-width="4"
                                       stroke-linecap="round" stroke-linejoin="round"/>
-                                <!-- Lock keyhole -->
-                                <circle cx="30" cy="26" r="4" fill="url(#shieldGrad)" opacity="0.9"/>
-                                <rect x="27.5" y="27" width="5" height="5" rx="1" fill="url(#shieldGrad)" opacity="0.9"/>
-                                <!-- Wordmark: "ulnix" (V is the shield) -->
-                                <text x="60" y="42" font-family="'Inter','Segoe UI',system-ui,sans-serif"
-                                      font-size="28" font-weight="800" letter-spacing="-0.5"
-                                      fill="currentColor" class="text-gray-900">ulnix</text>
-                                <!-- "V" letter matching shield -->
-                                <text x="47" y="42" font-family="'Inter','Segoe UI',system-ui,sans-serif"
-                                      font-size="28" font-weight="800" letter-spacing="-0.5"
+                                <!-- Wordmark -->
+                                <text x="60" y="42" font-family="'Outfit',sans-serif"
+                                      font-size="28" font-weight="900" letter-spacing="-1"
+                                      fill="currentColor" class="text-gray-900 dark:text-white">ulnix</text>
+                                <text x="47" y="42" font-family="'Outfit',sans-serif"
+                                      font-size="28" font-weight="900" letter-spacing="-1"
                                       fill="url(#vGrad)">V</text>
                             </svg>
                         </a>
                     </div>
                 </div>
-                <div class="flex items-center space-x-4">
-                    <button id="theme-toggle" type="button" class="text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none rounded-lg text-sm p-2.5">
+                <div class="flex items-center space-x-6">
+                    <button id="theme-toggle" type="button" class="text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 focus:outline-none rounded-xl p-2.5 transition-all">
                         <i id="theme-toggle-dark-icon" class="hidden fa-solid fa-moon"></i>
                         <i id="theme-toggle-light-icon" class="hidden fa-solid fa-sun"></i>
                     </button>
                     
                     {% if current_user.is_authenticated %}
-                        <a href="{{ url_for('main.pricing') }}" class="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">Pricing</a>
-                        <a href="{{ url_for('user.dashboard') }}" class="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">Dashboard</a>
-                        <span class="text-gray-300 dark:text-gray-600">|</span>
-                        <span class="text-sm text-gray-500 dark:text-gray-400">Hello, {{ current_user.username }}</span>
-                        <a href="{{ url_for('auth.logout') }}" class="text-sm text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 px-3 py-2 transition-colors">Logout</a>
+                        <a href="{{ url_for('main.pricing') }}" class="text-sm font-black uppercase tracking-widest text-gray-600 dark:text-gray-400 hover:text-indigo-500 dark:hover:text-indigo-400 transition-colors">Pricing</a>
+                        <a href="{{ url_for('main.contact') }}" class="text-sm font-black uppercase tracking-widest text-gray-600 dark:text-gray-400 hover:text-indigo-500 dark:hover:text-indigo-400 transition-colors">Contact</a>
+                        <a href="{{ url_for('user.dashboard') }}" class="text-sm font-black uppercase tracking-widest text-gray-600 dark:text-gray-400 hover:text-indigo-500 dark:hover:text-indigo-400 transition-colors">Dashboard</a>
+                        <a href="{{ url_for('auth.logout') }}" class="text-sm font-black uppercase tracking-widest text-red-500/80 hover:text-red-500 transition-colors">Logout</a>
                     {% else %}
-                        <a href="{{ url_for('main.pricing') }}" class="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">Pricing</a>
-                        <a href="{{ url_for('auth.login') }}" class="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">Login</a>
-                        <a href="{{ url_for('auth.register') }}" class="bg-indigo-600 text-white hover:bg-indigo-700 px-4 py-2 rounded-md text-sm font-medium transition duration-150">Sign Up</a>
+                        <a href="{{ url_for('main.pricing') }}" class="text-sm font-black uppercase tracking-widest text-gray-600 dark:text-gray-400 hover:text-indigo-500 dark:hover:text-indigo-400 transition-colors">Pricing</a>
+                        <a href="{{ url_for('main.contact') }}" class="text-sm font-black uppercase tracking-widest text-gray-600 dark:text-gray-400 hover:text-indigo-500 dark:hover:text-indigo-400 transition-colors">Contact</a>
+                        <a href="{{ url_for('auth.login') }}" class="text-sm font-black uppercase tracking-widest text-gray-600 dark:text-gray-400 hover:text-indigo-500 transition-colors">Login</a>
+                        <a href="{{ url_for('auth.register') }}" class="bg-indigo-600 text-white hover:bg-indigo-700 px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest shadow-[0_0_15px_rgba(99,102,241,0.3)] transition-all transform hover:-translate-y-0.5">Explore Intelligence</a>
                     {% endif %}
                 </div>
             </div>
@@ -102,8 +106,8 @@
         {% with messages = get_flashed_messages() %}
             {% if messages %}
                 {% for message in messages %}
-                <div class="bg-blue-100 dark:bg-blue-900/50 border-l-4 border-blue-500 text-blue-700 dark:text-blue-300 p-4 mb-4" role="alert">
-                    <p>{{ message }}</p>
+                <div class="bg-indigo-500/10 border-l-4 border-indigo-500 text-indigo-700 dark:text-indigo-300 p-4 mb-4 backdrop-blur-md rounded-r-xl" role="alert">
+                    <p class="font-bold text-sm uppercase tracking-widest">{{ message }}</p>
                 </div>
                 {% endfor %}
             {% endif %}
@@ -116,9 +120,16 @@
     </main>
 
     <!-- Footer -->
-    <footer class="bg-white dark:bg-gray-800 shadow mt-12 py-6 border-t dark:border-gray-700">
-        <div class="max-w-7xl mx-auto px-4 text-center text-gray-500 dark:text-gray-400 text-sm">
-            &copy; 2026 Vulnix. All rights reserved. &nbsp;·&nbsp; <a href="https://vulnix.space" class="hover:text-indigo-500 transition-colors">vulnix.space</a>
+    <footer class="bg-black py-12 border-t border-white/5 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="text-gray-500 text-[10px] font-black uppercase tracking-[0.3em]">
+                &copy; 2026 Vulnix. Distributed Intelligence.
+            </div>
+            <div class="flex items-center gap-8">
+                <a href="https://vulnix.space" class="text-gray-500 hover:text-indigo-400 transition-colors text-[10px] font-black uppercase tracking-widest">Platform</a>
+                <a href="#" class="text-gray-500 hover:text-indigo-400 transition-colors text-[10px] font-black uppercase tracking-widest">Docs</a>
+                <a href="#" class="text-gray-500 hover:text-indigo-400 transition-colors text-[10px] font-black uppercase tracking-widest">Terminus</a>
+            </div>
         </div>
     </footer>
 

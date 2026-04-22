@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{% block title %}Contact Vulnix — Security Intelligence Support{% endblock %}
+
+{% block content %}
+<div class="bg-[#030712] min-h-screen relative overflow-hidden flex flex-col items-center py-24 sm:py-32">
+    <!-- Cyber Glow Background -->
+    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[600px] bg-indigo-600/5 blur-[120px] pointer-events-none"></div>
+    
+    <div class="max-w-4xl w-full px-6 relative z-10">
+        
+        <!-- 1. HERO SECTION -->
+        <div class="text-center mb-16">
+            <h2 class="text-xs font-black text-indigo-500 tracking-[0.4em] uppercase mb-4">Support & Intelligence</h2>
+            <h1 class="text-5xl md:text-7xl font-black tracking-tighter text-white mb-6">
+                Contact <span class="italic text-indigo-400 font-black">Vulnix</span>
+            </h1>
+            <p class="max-w-xl mx-auto text-lg text-gray-400 font-medium leading-relaxed">
+                Have questions about your scan results or security issues? Reach out directly to our intelligence team.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-12 items-start">
+            
+            <!-- 2. CONTACT INFO -->
+            <div class="md:col-span-5 space-y-8">
+                <div class="p-8 glass rounded-[2.5rem] border border-white/5 backdrop-blur-xl">
+                    <h3 class="text-sm font-black text-white uppercase tracking-widest mb-6 flex items-center">
+                        <span class="w-2 h-2 rounded-full bg-indigo-500 mr-3 shadow-[0_0_10px_#6366f1]"></span> Channels
+                    </h3>
+                    
+                    <div class="space-y-6">
+                        <div>
+                            <p class="text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] mb-1">Direct Email</p>
+                            <a href="mailto:vulnix.space@gmail.com" class="text-lg font-bold text-white hover:text-indigo-400 transition-colors">vulnix.space@gmail.com</a>
+                        </div>
+                        
+                        <div class="pt-4 border-t border-white/5">
+                            <p class="text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] mb-1">Response Time</p>
+                            <p class="text-sm text-gray-400 font-medium italic">We usually respond within 24 hours.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TRUST SHIELD -->
+                <div class="p-8 glass rounded-[2.5rem] border border-white/5 bg-indigo-600/5">
+                    <i class="fa-solid fa-shield-halved text-2xl text-indigo-500 mb-4"></i>
+                    <p class="text-sm text-gray-400 leading-relaxed font-medium">
+                        Your communication is handled through encrypted channels. For reporting sensitive zero-day findings, please use our primary email.
+                    </p>
+                </div>
+            </div>
+
+            <!-- 3. CONTACT FORM -->
+            <div class="md:col-span-7">
+                <form action="https://formspree.io/f/meevpqna" method="POST" class="p-10 glass rounded-[3rem] border border-white/10 space-y-6 relative group overflow-hidden">
+                    <div class="absolute inset-0 bg-gradient-to-br from-indigo-500/5 to-transparent pointer-events-none"></div>
+                    
+                    <!-- Formspree Config -->
+                    <input type="hidden" name="_subject" value="New Vulnix Contact Message">
+                    <input type="hidden" name="_next" value="https://vulnix-space.onrender.com/thank-you">
+                    
+                    <div class="space-y-2">
+                        <label for="name" class="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">Full Name</label>
+                        <input type="text" name="name" id="name" required placeholder="John Doe"
+                               class="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white placeholder-gray-600 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all font-medium">
+                    </div>
+
+                    <div class="space-y-2">
+                        <label for="email" class="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">Email Intelligence</label>
+                        <input type="email" name="email" id="email" required placeholder="john@company.com"
+                               class="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white placeholder-gray-600 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all font-medium">
+                    </div>
+
+                    <div class="space-y-2">
+                        <label for="message" class="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">Message Brief</label>
+                        <textarea name="message" id="message" required rows="5" placeholder="How can we help secure your assets?"
+                                  class="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white placeholder-gray-600 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all font-medium resize-none"></textarea>
+                    </div>
+
+                    <button type="submit" class="w-full py-5 bg-indigo-600 text-white rounded-2xl font-black uppercase tracking-[0.2em] text-xs shadow-[0_0_20px_rgba(99,102,241,0.3)] hover:shadow-[0_0_40px_rgba(99,102,241,0.5)] transition-all hover:-translate-y-1 active:translate-y-0">
+                        Send Message
+                    </button>
+                    
+                    <p class="text-center text-[10px] text-gray-600 font-bold uppercase tracking-widest">Powered by Vulnix Intelligence Response</p>
+                </form>
+            </div>
+        </div>
+
+        <!-- 4. EXTRA CTA -->
+        <div class="mt-32 p-12 glass rounded-[3rem] border border-indigo-500/20 text-center relative overflow-hidden group">
+            <div class="absolute inset-0 bg-indigo-600/5 translate-y-full group-hover:translate-y-0 transition-transform duration-700"></div>
+            <div class="relative z-10">
+                <h3 class="text-2xl font-black text-white mb-4 italic">Or test your website security instantly</h3>
+                <p class="text-gray-400 mb-8 max-w-lg mx-auto font-medium">Don't wait for a reply to secure your perimeter. Deploy our scan engine now.</p>
+                <a href="{{ url_for('auth.register') }}" class="inline-block px-12 py-5 bg-white text-indigo-600 rounded-2xl font-black uppercase tracking-widest text-xs shadow-xl transition-all hover:scale-105 active:scale-95">
+                    Start Free Scan
+                </a>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<style>
+    .glass {
+        background: rgba(255, 255, 255, 0.02);
+        backdrop-filter: blur(12px);
+    }
+</style>
+{% endblock %}

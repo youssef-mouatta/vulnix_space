@@ -11,10 +11,9 @@
         <div class="bg-white dark:bg-gray-800 p-8 rounded-[2rem] shadow-sm border border-gray-100 dark:border-gray-700/50">
             <div class="mb-6 flex justify-between items-center">
                 <div>
-                    <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Run a Vulnix Scan</h2>
-                    <p class="text-gray-500 dark:text-gray-400 text-sm mt-1">Enter a URL to run a deep AI-powered risk intelligence scan.</p>
+                    <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Run a Vulnix Scan</h2>                     <p class="text-gray-600 dark:text-gray-400 text-sm mt-1">Enter a URL to run a deep AI-powered risk intelligence scan.</p>
                 </div>
-                <span class="px-3 py-1 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-400 border border-indigo-100 dark:border-indigo-800 rounded-full text-xs font-bold tracking-wide uppercase shadow-inner">
+                <span class="px-3 py-1 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-800 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800 rounded-full text-xs font-bold tracking-wide uppercase shadow-inner">
                     {{ current_user.tier }} Plan
                 </span>
             </div>
@@ -25,7 +24,7 @@
                         <i class="fa-solid fa-link text-gray-400 group-focus-within:text-indigo-500 transition-colors text-lg"></i>
                     </div>
                     <input type="url" name="url" placeholder="https://your-startup.com" required 
-                        class="block w-full pl-14 pr-4 py-5 rounded-2xl border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white placeholder-gray-400 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all shadow-inner text-lg outline-none">
+                        class="block w-full pl-14 pr-4 py-5 rounded-2xl border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white placeholder-gray-400 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all shadow-inner text-lg outline-none">
                     <button type="submit" id="scan-btn" class="absolute right-3 px-6 py-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-medium transition-all shadow-md group-focus-within:-translate-y-0.5">
                         <span id="btn-text"><i class="fa-solid fa-radar mr-2"></i>Scan Now</span>
                         <i id="btn-spin" class="fa-solid fa-circle-notch fa-spin hidden px-4"></i>
@@ -37,14 +36,14 @@
             <div id="loading-skeleton" class="hidden mt-8 space-y-4">
                 <div class="flex items-center space-x-3 mb-6">
                     <div class="w-5 h-5 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
-                    <span class="text-sm font-medium text-indigo-600 dark:text-indigo-400">Analyzing headers and vulnerabilities... estimating score...</span>
+                    <span class="text-sm font-medium text-indigo-700 dark:text-indigo-400">Analyzing headers and vulnerabilities... estimating score...</span>
                 </div>
-                <div class="h-4 bg-gray-100 dark:bg-gray-700 rounded-full w-3/4 animate-pulse"></div>
-                <div class="h-4 bg-gray-100 dark:bg-gray-700 rounded-full w-full animate-pulse"></div>
-                <div class="h-4 bg-gray-100 dark:bg-gray-700 rounded-full w-5/6 animate-pulse"></div>
+                <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded-full w-3/4 animate-pulse"></div>
+                <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded-full w-full animate-pulse"></div>
+                <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded-full w-5/6 animate-pulse"></div>
                 <div class="mt-6 grid grid-cols-2 gap-4">
-                    <div class="h-28 bg-gray-50 dark:bg-gray-700/50 rounded-2xl animate-pulse"></div>
-                    <div class="h-28 bg-gray-50 dark:bg-gray-700/50 rounded-2xl animate-pulse"></div>
+                    <div class="h-28 bg-gray-100 dark:bg-gray-700/50 rounded-2xl animate-pulse"></div>
+                    <div class="h-28 bg-gray-100 dark:bg-gray-700/50 rounded-2xl animate-pulse"></div>
                 </div>
             </div>
         </div>
@@ -52,15 +51,15 @@
         <!-- Latest Scan Highlight (If any) -->
         {% if scans %}
         {% set last_scan = scans[0] %}
-        <div class="bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-800/80 p-8 rounded-[2rem] shadow-sm border border-gray-100 dark:border-gray-700/50 relative overflow-hidden">
+        <div class="bg-white dark:bg-gray-800 p-8 rounded-[2rem] shadow-sm border border-gray-100 dark:border-gray-700/50 relative overflow-hidden">
              <!-- Decorator ring -->
              <div class="absolute -right-12 -top-12 w-48 h-48 border-[6px] border-indigo-50 dark:border-indigo-900/10 rounded-full pointer-events-none"></div>
              
-             <h3 class="text-xs uppercase tracking-widest font-bold text-gray-400 dark:text-gray-500 mb-6">Latest Result</h3>
+             <h3 class="text-xs uppercase tracking-widest font-bold text-gray-500 dark:text-gray-500 mb-6">Latest Result</h3>
              <div class="flex items-center justify-between">
                  <div>
                      <h4 class="text-2xl font-extrabold text-gray-900 dark:text-white truncate max-w-xs sm:max-w-md">{{ last_scan.url }}</h4>
-                     <p class="text-gray-500 dark:text-gray-400 text-sm mt-1 flex items-center">
+                     <p class="text-gray-600 dark:text-gray-400 text-sm mt-1 flex items-center">
                          <i class="fa-regular fa-calendar-check mr-2"></i> {{ last_scan.date_scanned.strftime('%B %d, %Y at %H:%M') }}
                      </p>
                  </div>

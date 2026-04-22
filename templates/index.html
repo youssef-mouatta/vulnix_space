@@ -1,101 +1,293 @@
 {% extends "base.html" %}
 
+{% block head %}
+<style>
+    :root {
+        --vulnix-bg: #030712;
+        --vulnix-surface: #0b1120;
+        --vulnix-accent: #6366f1;
+        --vulnix-danger: #ef4444;
+        --vulnix-warning: #f59e0b;
+        --vulnix-success: #10b981;
+    }
+
+    body {
+        transition: background-color 0.2s, color 0.2s;
+        font-family: 'Outfit', sans-serif;
+    }
+
+    .hero-glow {
+        background: radial-gradient(circle at center, rgba(99, 102, 241, 0.15) 0%, transparent 70%);
+    }
+
+    .glass {
+        @apply bg-gray-50/10 dark:bg-white/5 backdrop-blur-xl border border-gray-200/20 dark:border-white/10;
+    }
+
+    .attack-line {
+        height: 2px;
+        background: linear-gradient(90deg, transparent, var(--vulnix-danger), transparent);
+        animation: scan 3s infinite linear;
+    }
+
+    @keyframes scan {
+        0% { transform: translateX(-100%); }
+        100% { transform: translateX(100%); }
+    }
+
+    .glow-hover:hover {
+        box-shadow: 0 0 30px rgba(99, 102, 241, 0.3);
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="relative overflow-hidden bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
-    <!-- Background Gradients -->
-    <div class="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80" aria-hidden="true">
-        <div class="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem]"></div>
-    </div>
+<div class="relative min-h-screen text-gray-800 dark:text-gray-200 overflow-hidden">
     
-    <!-- Hero Section -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-16 text-center">
-        <div class="inline-flex items-center rounded-full px-4 py-1.5 text-sm font-semibold text-indigo-600 dark:text-indigo-400 ring-1 ring-inset ring-indigo-600/20 dark:ring-indigo-400/30 mb-8 animate-bounce backdrop-blur-sm">
-            <span>✨ Vulnix v2.0 — Risk Intelligence Engine is live</span>
-        </div>
-        <h1 class="mx-auto max-w-4xl font-display text-5xl font-extrabold tracking-tight text-gray-900 dark:text-white sm:text-7xl">
-            Detect Website Vulnerabilities in <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-purple-600">Seconds</span> with Vulnix.
-        </h1>
-        <p class="mx-auto mt-6 max-w-2xl text-lg tracking-tight text-gray-600 dark:text-gray-300">
-            Vulnix scans your site for real vulnerabilities, correlates attack chains, and delivers copy-paste fixes — powered by AI. No security degree needed.
-        </p>
-        <div class="mt-10 flex flex-col sm:flex-row justify-center gap-4">
-            {% if current_user.is_authenticated %}
-                <a href="{{ url_for('user.dashboard') }}" class="group relative rounded-2xl bg-indigo-600 px-8 py-4 text-sm font-semibold text-white hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 transition-all shadow-[0_0_20px_rgba(79,70,229,0.4)] hover:shadow-[0_0_30px_rgba(79,70,229,0.6)] hover:-translate-y-1">
-                    Go to Dashboard <span aria-hidden="true" class="inline-block transition-transform group-hover:translate-x-1">→</span>
-                </a>
-            {% else %}
-                <a href="{{ url_for('auth.register') }}" class="group relative rounded-2xl bg-indigo-600 px-8 py-4 text-sm font-semibold text-white hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 transition-all shadow-[0_0_20px_rgba(79,70,229,0.4)] hover:shadow-[0_0_30px_rgba(79,70,229,0.6)] hover:-translate-y-1">
-                    Start Free Scan <span aria-hidden="true" class="inline-block transition-transform group-hover:translate-x-1">→</span>
-                </a>
-                <a href="#features" class="rounded-2xl px-8 py-4 text-sm font-semibold text-gray-900 dark:text-white ring-1 ring-inset ring-gray-300 dark:ring-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all">
-                    View Features
-                </a>
-            {% endif %}
-        </div>
-    </div>
-
-    <!-- Dashboard Mockup -->
-    <div class="mx-auto max-w-7xl px-6 lg:px-8 pb-20 relative z-10">
-        <div class="rounded-2xl bg-gray-900/5 dark:bg-white/5 p-2 ring-1 ring-inset ring-gray-900/10 dark:ring-white/10 lg:-m-4 lg:rounded-[2rem] lg:p-4 shadow-2xl backdrop-blur-3xl transform transition hover:scale-[1.01] duration-500">
-            <div class="rounded-xl bg-white dark:bg-gray-900 shadow-2xl ring-1 ring-gray-900/10 dark:ring-gray-800 overflow-hidden">
-                <div class="flex items-center px-4 py-3 border-b border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/50">
-                    <div class="flex space-x-2">
-                        <div class="w-3 h-3 rounded-full bg-red-400"></div>
-                        <div class="w-3 h-3 rounded-full bg-yellow-400"></div>
-                        <div class="w-3 h-3 rounded-full bg-green-400"></div>
-                    </div>
-                </div>
-                <!-- Mockup Content -->
-                <div class="p-6 grid grid-cols-1 md:grid-cols-4 gap-6">
-                    <div class="md:col-span-1 space-y-4">
-                        <div class="h-24 bg-gray-100 dark:bg-gray-800 rounded-xl animate-pulse"></div>
-                        <div class="h-48 bg-gray-100 dark:bg-gray-800 rounded-xl animate-pulse"></div>
-                    </div>
-                    <div class="md:col-span-3 space-y-4">
-                        <div class="h-12 bg-indigo-50 dark:bg-indigo-900/20 rounded-xl"></div>
-                        <div class="h-64 bg-gray-100 dark:bg-gray-800 rounded-xl animate-pulse"></div>
-                    </div>
-                </div>
+    <!-- 1. HERO SECTION -->
+    <section class="relative pt-32 pb-20 hero-glow">
+        <div class="max-w-7xl mx-auto px-6 text-center">
+            <div class="inline-flex items-center px-4 py-2 rounded-full glass mb-8 animate-pulse text-gray-600 dark:text-gray-400">
+                <span class="w-2 h-2 rounded-full bg-red-500 mr-3 shadow-[0_0_10px_#ef4444]"></span>
+                <span class="text-xs font-black uppercase tracking-[0.2em]">Threat Intelligence v2.4 Live</span>
             </div>
-        </div>
-    </div>
-
-    <!-- Trust / Features Section -->
-    <div id="features" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 relative z-10">
-        <div class="text-center mb-16">
-            <h2 class="text-xs font-semibold text-indigo-600 dark:text-indigo-400 tracking-widest uppercase">Built for Speed</h2>
-            <p class="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 dark:text-white sm:text-4xl">
-                Everything you need to ship securely with Vulnix.
+            
+            <h1 class="text-6xl md:text-8xl font-black tracking-tighter leading-[0.9] mb-8 text-gray-900 dark:text-white">
+                Detect Real <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-purple-600">Attack Paths</span> <br>Before Hackers Do
+            </h1>
+            
+            <p class="max-w-2xl mx-auto text-xl md:text-2xl text-gray-600 dark:text-gray-400 mb-12 leading-relaxed">
+                AI-powered security scanning that reveals how attackers actually exploit your website — not just vulnerabilities.
             </p>
+            
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-6">
+                <a href="{{ url_for('auth.register') }}" class="group relative px-10 py-5 bg-indigo-600 text-white rounded-2xl font-black uppercase tracking-widest text-sm glow-hover transition-all hover:-translate-y-1">
+                    Start Free Scan
+                    <span class="absolute -bottom-1 -right-1 w-4 h-4 bg-white/20 rounded-full blur"></span>
+                </a>
+                <a href="#demo" class="px-10 py-5 glass text-gray-900 dark:text-white rounded-2xl font-black uppercase tracking-widest text-sm hover:bg-gray-200/20 dark:hover:bg-white/5 transition-all">
+                    View Live Demo
+                </a>
+            </div>
+
+            <!-- PRODUCT PREVIEW -->
+            <div class="mt-20 relative group">
+                <div class="absolute -inset-1 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-3xl blur opacity-20 group-hover:opacity-40 transition duration-1000 group-hover:duration-200"></div>
+                <div class="relative glass rounded-[2.5rem] overflow-hidden shadow-2xl border-white/10">
+                    <img src="{{ url_for('static', filename='img/vulnix_hero_dashboard.png') }}" alt="Vulnix Intelligence Dashboard" class="w-full h-auto transform group-hover:scale-[1.01] transition-transform duration-700">
+                </div>
+            </div>
+
+            <!-- TRUST SIGNALS -->
+            <div class="mt-24 grid grid-cols-2 md:grid-cols-4 gap-8 opacity-50 grayscale hover:grayscale-0 transition-all">
+                <div class="flex flex-col items-center">
+                    <span class="text-3xl font-black text-gray-900 dark:text-white">12,000+</span>
+                    <span class="text-[10px] uppercase tracking-widest font-bold">Scans Performed</span>
+                </div>
+                <div class="flex flex-col items-center">
+                    <span class="text-3xl font-black text-gray-900 dark:text-white">2,300+</span>
+                    <span class="text-[10px] uppercase tracking-widest font-bold">Exploits Blocked</span>
+                </div>
+                <div class="flex flex-col items-center">
+                    <span class="text-3xl font-black text-gray-900 dark:text-white">OWASP</span>
+                    <span class="text-[10px] uppercase tracking-widest font-bold">Standard Detection</span>
+                </div>
+                <div class="flex flex-col items-center">
+                    <span class="text-3xl font-black text-gray-900 dark:text-white">AI</span>
+                    <span class="text-[10px] uppercase tracking-widest font-bold">Attack Simulation</span>
+                </div>
+            </div>
+            <p class="mt-8 text-xs font-bold text-indigo-500 uppercase tracking-[0.3em]">Used by developers and security researchers globally</p>
         </div>
-        <div class="grid grid-cols-1 gap-8 sm:grid-cols-3 max-w-6xl mx-auto">
-            <div class="bg-white dark:bg-gray-800/80 backdrop-blur-xl p-8 rounded-[2rem] shadow-sm border border-gray-100 dark:border-gray-700/50 hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 group">
-                <div class="w-14 h-14 bg-indigo-50 dark:bg-indigo-900/30 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                    <i class="fa-solid fa-bolt text-2xl text-indigo-600 dark:text-indigo-400"></i>
+    </section>
+
+    <!-- 2. PROBLEM SECTION -->
+    <section class="py-24 relative border-y border-gray-200/10 dark:border-white/5 bg-gray-100/50 dark:bg-black/20">
+        <div class="max-w-5xl mx-auto px-6 text-center">
+            <h2 class="text-4xl md:text-5xl font-black text-gray-900 dark:text-white mb-16 tracking-tight">
+                Most Security Tools Show Problems. <br><span class="text-red-600 dark:text-red-500">They Don’t Show Attacks.</span>
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 text-left">
+                <div class="p-8 glass rounded-3xl border-l-4 border-red-500/50">
+                    <h3 class="text-red-500 font-black uppercase tracking-widest text-xs mb-4">The Failure</h3>
+                    <p class="text-lg text-gray-600 dark:text-gray-300">Traditional scanners flood your inbox with a 40-page list of vulnerabilities. No context. No priority. No clarity on what actually matters.</p>
                 </div>
-                <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3">Instant Scanning</h3>
-                <p class="text-gray-500 dark:text-gray-400">Deep inspection of HTTP headers, framework misconfigurations, and SSL certificates instantly.</p>
-            </div>
-            <div class="bg-white dark:bg-gray-800/80 backdrop-blur-xl p-8 rounded-[2rem] shadow-sm border border-gray-100 dark:border-gray-700/50 hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 group">
-                <div class="w-14 h-14 bg-purple-50 dark:bg-purple-900/30 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                    <i class="fa-solid fa-robot text-2xl text-purple-600 dark:text-purple-400"></i>
+                <div class="p-8 glass rounded-3xl border-l-4 border-indigo-500/50">
+                    <h3 class="text-indigo-500 font-black uppercase tracking-widest text-xs mb-4">The Mystery</h3>
+                    <p class="text-lg text-gray-300">Developers don't understand the real-world impact. How does a "Missing Header" lead to a "DB Breach"? Without attack paths, you're flying blind.</p>
                 </div>
-                <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3">AI Remediation</h3>
-                <p class="text-gray-500 dark:text-gray-400">Don't guess how to fix issues. Get direct, copy-pasteable code snippets context-aware of your tech stack.</p>
-            </div>
-            <div class="bg-white dark:bg-gray-800/80 backdrop-blur-xl p-8 rounded-[2rem] shadow-sm border border-gray-100 dark:border-gray-700/50 hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 group">
-                <div class="w-14 h-14 bg-green-50 dark:bg-green-900/30 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                    <i class="fa-solid fa-shield-halved text-2xl text-green-600 dark:text-green-400"></i>
-                </div>
-                <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3">Threat Detection</h3>
-                <p class="text-gray-500 dark:text-gray-400">Track and visualize vulnerabilities over time with gorgeous dashboard analytics and PDF reports.</p>
             </div>
         </div>
-    </div>
-    
-    <!-- Bottom Gradients -->
-    <div class="absolute inset-x-0 top-[calc(100%-13rem)] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[calc(100%-30rem)]" aria-hidden="true">
-        <div class="relative left-[calc(50%+3rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 bg-gradient-to-tr from-[#9089fc] to-[#ff80b5] opacity-30 sm:left-[calc(50%+36rem)] sm:w-[72.1875rem]"></div>
-    </div>
+    </section>
+
+    <!-- 3. SOLUTION SECTION -->
+    <section class="py-24">
+        <div class="max-w-7xl mx-auto px-6 text-center">
+            <h2 class="text-5xl font-black text-gray-900 dark:text-white mb-20 italic">Vulnix Shows How You Get Hacked</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="p-10 glass rounded-[2.5rem] text-left hover:shadow-xl transition-all">
+                    <div class="text-4xl mb-6">🔍</div>
+                    <h3 class="text-2xl font-black text-gray-900 dark:text-white mb-4 italic">Detect</h3>
+                    <p class="text-gray-600 dark:text-gray-400">Identify real security weaknesses that legacy scanners miss, using our advanced behavioral engine.</p>
+                </div>
+                <div class="p-10 glass rounded-[2.5rem] text-left border-t-2 border-indigo-500 hover:shadow-xl transition-all">
+                    <div class="text-4xl mb-6">⚡</div>
+                    <h3 class="text-2xl font-black text-gray-900 dark:text-white mb-4 italic">Simulate</h3>
+                    <p class="text-gray-600 dark:text-gray-400">Reconstruct real-world attack scenarios to see exactly how an attacker would move through your system.</p>
+                </div>
+                <div class="p-10 glass rounded-[2.5rem] text-left hover:shadow-xl transition-all">
+                    <div class="text-4xl mb-6">🎯</div>
+                    <h3 class="text-2xl font-black text-gray-900 dark:text-white mb-4 italic">Prioritize</h3>
+                    <p class="text-gray-600 dark:text-gray-400">Know exactly what to fix first based on the actual danger it poses to your business data.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. ATTACK GRAPH PREVIEW -->
+    <section id="demo" class="py-24 bg-indigo-50 dark:bg-indigo-950/10">
+        <div class="max-w-5xl mx-auto px-6">
+            <div class="glass p-12 rounded-[3rem] border-2 border-indigo-500/20 shadow-2xl">
+                <div class="text-center mb-16">
+                    <h2 class="text-4xl font-black text-gray-900 dark:text-white mb-4 italic">See The Attack Before It Happens</h2>
+                    <p class="text-gray-600 dark:text-gray-500 font-mono text-sm leading-relaxed">Visual exploit chains reveal how small issues become real breaches.</p>
+                </div>
+                
+                <!-- ATTACK CHAIN VISUAL -->
+                <div class="flex flex-col md:flex-row items-center justify-between gap-8 py-10">
+                    <div class="flex flex-col items-center">
+                        <div class="w-20 h-20 glass rounded-full flex items-center justify-center font-black text-xs text-indigo-400 mb-2">INPUT</div>
+                        <span class="text-[10px] text-gray-600 uppercase font-bold tracking-widest">Entry Point</span>
+                    </div>
+                    <div class="hidden md:block flex-grow px-4">
+                        <div class="attack-line rounded-full opacity-30"></div>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <div class="w-20 h-20 glass border-red-500/30 rounded-full flex items-center justify-center font-black text-xs text-red-500 mb-2">XSS</div>
+                        <span class="text-[10px] text-gray-600 uppercase font-bold tracking-widest">Vulnerability</span>
+                    </div>
+                    <div class="hidden md:block flex-grow px-4">
+                        <div class="attack-line rounded-full"></div>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <div class="w-20 h-20 glass border-amber-500/30 rounded-full flex items-center justify-center font-black text-xs text-amber-500 mb-2">COOKIE</div>
+                        <span class="text-[10px] text-gray-600 uppercase font-bold tracking-widest">Theft</span>
+                    </div>
+                    <div class="hidden md:block flex-grow px-4">
+                        <div class="attack-line rounded-full"></div>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <div class="w-24 h-24 bg-red-600 rounded-full flex items-center justify-center font-black text-xs text-white shadow-[0_0_40px_rgba(239,68,68,0.5)] mb-2">TAKEOVER</div>
+                        <span class="text-[10px] text-red-500 uppercase font-bold tracking-widest">Breach</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. FEATURES SECTION -->
+    <section class="py-24">
+        <div class="max-w-7xl mx-auto px-6">
+            <h2 class="text-4xl font-black text-gray-900 dark:text-white text-center mb-20 italic">Elite Security Intelligence</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="glass p-8 rounded-3xl hover:bg-gray-100/50 dark:hover:bg-white/5 transition-all">
+                    <h4 class="text-indigo-600 dark:text-indigo-400 font-black text-sm uppercase tracking-widest mb-4">Exploit Chain Detection</h4>
+                    <p class="text-gray-600 dark:text-gray-400 text-sm">Our engine correlates multiple minor weaknesses into a single, high-risk attack story.</p>
+                </div>
+                <div class="glass p-8 rounded-3xl hover:bg-gray-100/50 dark:hover:bg-white/5 transition-all">
+                    <h4 class="text-indigo-600 dark:text-indigo-400 font-black text-sm uppercase tracking-widest mb-4">Real Attack Simulation</h4>
+                    <p class="text-gray-600 dark:text-gray-400 text-sm">Execute harmless behavioral payloads to verify if a weakness is actually exploitable in production.</p>
+                </div>
+                <div class="glass p-8 rounded-3xl hover:bg-gray-100/50 dark:hover:bg-white/5 transition-all">
+                    <h4 class="text-indigo-600 dark:text-indigo-400 font-black text-sm uppercase tracking-widest mb-4">AI Risk Intelligence</h4>
+                    <p class="text-gray-600 dark:text-gray-400 text-sm">Go beyond "High/Medium/Low" with AI-driven summaries of your actual business risk.</p>
+                </div>
+                <div class="glass p-8 rounded-3xl hover:bg-gray-100/50 dark:hover:bg-white/5 transition-all">
+                    <h4 class="text-indigo-600 dark:text-indigo-400 font-black text-sm uppercase tracking-widest mb-4">Priority Fix Engine</h4>
+                    <p class="text-gray-600 dark:text-gray-400 text-sm">Get copy-paste remediation scripts tailored to your specific framework and infrastructure.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 6. PRICING & UPGRADE PREVIEW -->
+    <section class="py-24 bg-gray-50/50 dark:bg-black/40 border-t border-gray-200/20 dark:border-white/5">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-20">
+                <h2 class="text-5xl font-black text-gray-900 dark:text-white mb-6 italic tracking-tighter">Your Intelligence Plan</h2>
+                <p class="text-gray-600 dark:text-gray-500 font-mono text-sm">Unlock full security intelligence with our Pro tier.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+                <!-- FREE -->
+                <div class="glass p-10 rounded-[3rem] flex flex-col hover:border-indigo-500/50 transition-all opacity-90">
+                    <h3 class="text-xl font-bold mb-2 text-gray-900 dark:text-white">Free Intelligence</h3>
+                    <div class="text-4xl font-black text-gray-900 dark:text-white mb-6">$0<span class="text-sm text-gray-500">/mo</span></div>
+                    <ul class="space-y-4 mb-10 flex-grow text-sm text-gray-400 font-bold">
+                        <li class="flex items-center"><i class="fa-solid fa-check text-indigo-500 mr-2"></i> Basic Surface Scan</li>
+                        <li class="flex items-center"><i class="fa-solid fa-check text-indigo-500 mr-2"></i> Limited Results (3)</li>
+                        <li class="flex items-center text-gray-600 italic">🔒 Locked Attack Chains</li>
+                    </ul>
+                    <a href="{{ url_for('auth.register') }}" class="py-4 rounded-xl border border-white/10 text-white font-black text-center uppercase tracking-widest text-xs">Scan Now</a>
+                </div>
+
+                <!-- PRO -->
+                <div class="glass p-10 rounded-[3rem] flex flex-col border-2 border-indigo-600 shadow-xl dark:shadow-[0_0_50px_rgba(99,102,241,0.2)] scale-105 z-10">
+                    <div class="bg-indigo-600 text-white text-[10px] font-black px-4 py-1 rounded-full w-max mb-6 uppercase tracking-widest">Recommended</div>
+                    <h3 class="text-xl font-bold mb-2 text-gray-900 dark:text-white">Intelligence Pro</h3>
+                    <div class="text-4xl font-black text-gray-900 dark:text-white mb-6">$7<span class="text-sm text-gray-500">/mo</span></div>
+                    <ul class="space-y-4 mb-10 flex-grow text-sm text-gray-300 font-bold">
+                        <li class="flex items-center"><i class="fa-solid fa-check text-indigo-500 mr-2"></i> Full Exploit Simulation</li>
+                        <li class="flex items-center"><i class="fa-solid fa-check text-indigo-500 mr-2"></i> Advanced Attack Chains</li>
+                        <li class="flex items-center"><i class="fa-solid fa-check text-indigo-500 mr-2"></i> AI Deep Analysis</li>
+                        <li class="flex items-center"><i class="fa-solid fa-check text-indigo-500 mr-2"></i> Priority Fix Engine</li>
+                    </ul>
+                    <a href="{{ url_for('auth.register') }}" class="py-4 rounded-xl bg-indigo-600 text-white font-black text-center uppercase tracking-widest text-xs glow-hover transition-all">Upgrade to Pro</a>
+                </div>
+
+                <!-- BUSINESS -->
+                <div class="glass p-10 rounded-[3rem] flex flex-col hover:border-white/20 transition-all opacity-80">
+                    <h3 class="text-xl font-bold mb-2">Enterprise Suite</h3>
+                    <div class="text-4xl font-black text-white mb-6">$20<span class="text-sm text-gray-500">/mo</span></div>
+                    <ul class="space-y-4 mb-10 flex-grow text-sm text-gray-400 font-bold">
+                        <li class="flex items-center"><i class="fa-solid fa-check text-indigo-500 mr-2"></i> API Infrastructure</li>
+                        <li class="flex items-center"><i class="fa-solid fa-check text-indigo-500 mr-2"></i> Unlimited Assets</li>
+                        <li class="flex items-center"><i class="fa-solid fa-check text-indigo-500 mr-2"></i> 24/7 Red Team Support</li>
+                    </ul>
+                    <a href="{{ url_for('auth.register') }}" class="py-4 rounded-xl border border-white/10 text-white font-black text-center uppercase tracking-widest text-xs">Contact Sales</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 7. FINAL CTA -->
+    <section class="py-32 relative overflow-hidden">
+        <div class="max-w-4xl mx-auto px-6 text-center relative z-10">
+            <h2 class="text-5xl md:text-7xl font-black text-gray-900 dark:text-white mb-8 tracking-tighter italic">Your website may already <br>be exposed.</h2>
+            <p class="text-xl text-gray-600 dark:text-gray-400 mb-12 uppercase tracking-[0.2em] font-bold">Deploy the intelligence engine before they do.</p>
+            <a href="{{ url_for('auth.register') }}" class="inline-block px-16 py-6 bg-red-600 text-white rounded-3xl font-black uppercase tracking-[0.3em] text-sm shadow-[0_0_40px_rgba(239,68,68,0.4)] hover:shadow-[0_0_60px_rgba(239,68,68,0.6)] transition-all hover:scale-105 active:scale-95">
+                Scan Now
+            </a>
+        </div>
+        
+        <!-- FAKE SCANLINE DESIGN -->
+        <div class="absolute inset-0 pointer-events-none opacity-5">
+            <div class="w-full h-1 bg-white animate-scan-y"></div>
+        </div>
+    </section>
+
 </div>
+
+<style>
+    @keyframes scan-y {
+        0% { transform: translateY(-100vh); }
+        100% { transform: translateY(100vh); }
+    }
+    .animate-scan-y {
+        animation: scan-y 8s infinite linear;
+    }
+</style>
 {% endblock %}

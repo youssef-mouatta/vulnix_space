@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}Message Received — Vulnix Intelligence{% endblock %}
+
+{% block content %}
+<div class="bg-[#030712] min-h-screen relative overflow-hidden flex flex-col items-center justify-center py-24 sm:py-32">
+    <!-- Cyber Glow Background -->
+    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[600px] bg-indigo-600/5 blur-[120px] pointer-events-none"></div>
+    
+    <div class="max-w-2xl w-full px-6 relative z-10 text-center">
+        <!-- Success Icon -->
+        <div class="w-24 h-24 bg-indigo-600/20 rounded-[2rem] border border-indigo-500/30 flex items-center justify-center mx-auto mb-10 shadow-[0_0_50px_rgba(99,102,241,0.15)]">
+            <i class="fa-solid fa-check text-4xl text-indigo-500"></i>
+        </div>
+
+        <h2 class="text-xs font-black text-indigo-500 tracking-[0.4em] uppercase mb-4">Transmission Received</h2>
+        <h1 class="text-5xl md:text-7xl font-black tracking-tighter text-white mb-6 italic">
+            Thank You
+        </h1>
+        <p class="text-lg text-gray-400 font-medium leading-relaxed mb-12">
+            Your message has been securely transmitted to the Vulnix Intelligence team. We usually respond to mission-critical inquiries within <span class="text-white font-bold">24 hours</span>.
+        </p>
+
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-6">
+            <a href="{{ url_for('main.index') }}" class="w-full sm:w-auto px-10 py-5 glass text-white rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-white/5 transition-all">
+                Return Home
+            </a>
+            <a href="{{ url_for('auth.register') }}" class="w-full sm:w-auto px-10 py-5 bg-indigo-600 text-white rounded-2xl font-black uppercase tracking-widest text-xs shadow-xl transition-all hover:-translate-y-1">
+                Start Free Scan
+            </a>
+        </div>
+    </div>
+</div>
+
+<style>
+    .glass {
+        background: rgba(255, 255, 255, 0.02);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+</style>
+{% endblock %}

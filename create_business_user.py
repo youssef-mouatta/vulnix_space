@@ -12,7 +12,7 @@ def generate_password(length=12):
 def create_user():
     with app.app_context():
         username = "admin_business"
-        password = generate_password()
+        password = "VulnixBizElite2026!"
         
         user = User.query.filter_by(username=username).first()
         if not user:

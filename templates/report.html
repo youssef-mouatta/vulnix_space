@@ -10,31 +10,22 @@
 <style>
   :root {
     --elite-primary: #6366f1;
-    --elite-bg: #030712;
-    --elite-surface: #111827;
-    --elite-border: rgba(255, 255, 255, 0.08);
-    --elite-text: #f3f4f6;
   }
 
   body {
-    background: var(--elite-bg);
-    color: var(--elite-text);
-    font-family: 'Outfit', sans-serif;
+    transition: background-color 0.2s, color 0.2s;
   }
 
   .glass-card {
-    background: rgba(255, 255, 255, 0.03);
-    backdrop-filter: blur(12px);
-    border: 1px solid var(--elite-border);
-    border-radius: 24px;
+    @apply bg-white/5 dark:bg-white/[0.03] backdrop-blur-xl border border-gray-200/10 dark:border-white/10 rounded-[24px];
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .risk-badge {
-    padding: 6px 16px;
-    border-radius: 12px;
+    padding: 8px 16px;
+    border-radius: 10px;
     font-size: 14px;
-    font-weight: 900;
+    font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 0.1em;
   }
@@ -82,11 +73,11 @@
         <div class="flex items-center gap-4 mb-4">
           <span class="risk-badge risk-{{ risk|lower }}">Target Risk: {{ risk }}</span>
           <span
-            class="px-5 py-2 bg-white/5 border border-white/10 rounded-full text-xl font-black tracking-widest text-[#fbbf24] shadow-[0_0_25px_rgba(251,191,36,0.2)]">
+            class="px-5 py-2 bg-indigo-50 dark:bg-white/5 border border-indigo-100 dark:border-white/10 rounded-full text-base font-black tracking-widest text-[#d97706] dark:text-[#fbbf24] shadow-sm dark:shadow-[0_0_20px_rgba(251,191,36,0.15)]">
             SCORE: <span class="text-xl">{{ score }}</span>/100
           </span>
         </div>
-        <h1 class="text-6xl font-black tracking-tighter leading-none glow-text">
+        <h1 class="text-6xl font-black tracking-tighter leading-[0.95] glow-text mb-4">
           {% if risk|lower == 'high' %}
           CRITICAL BREACH <span class="text-red-500">VECTORS FOUND</span>
           {% elif risk|lower == 'medium' %}
@@ -95,21 +86,21 @@
           SURFACE AREA <span class="text-emerald-500">LOCKED DOWN</span>
           {% endif %}
         </h1>
-        <p class="font-mono text-indigo-400 mt-6 text-lg flex items-center">
-          <span class="w-3 h-3 bg-indigo-500 rounded-full mr-4 animate-ping"></span>
+        <p class="font-mono text-indigo-600 dark:text-indigo-400 mt-6 text-lg flex items-center">
+          <span class="w-3 h-3 bg-indigo-600 dark:bg-indigo-500 rounded-full mr-4 animate-ping"></span>
           {{ target }}
         </p>
       </div>
     </div>
 
     <!-- 2. AI SUMMARY (REALISTIC & DIRECT) -->
-    <div class="glass-card p-10 border-l-8 border-indigo-600">
+    <div class="bg-indigo-50 dark:bg-white/[0.03] p-10 border-l-8 border-indigo-600 rounded-[2rem] backdrop-blur-xl">
       <div class="flex items-start gap-8">
         <div class="text-4xl">🧠</div>
         <div>
-          <h3 class="text-[14px] font-black text-indigo-500 uppercase tracking-[0.3em] mb-3">AI Intelligence Objective
+          <h3 class="text-[14px] font-black text-indigo-500 uppercase tracking-[0.4em] mb-4">AI Intelligence Objective
           </h3>
-          <p class="text-2xl font-bold text-grey leading-snug">{{ ai_summary }}</p>
+          <p class="text-xl font-bold text-gray-900 dark:text-gray-100 leading-tight">{{ ai_summary }}</p>
         </div>
       </div>
     </div>
@@ -119,7 +110,7 @@
 
     <!-- 3. FIX FIRST SECTION -->
     <div class="lg:col-span-5">
-      <h2 class="text-xs font-black text-gray-400 uppercase tracking-[0.2em] mb-8">🚨 Priority Remediation (Fix First)
+      <h2 class="text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em] mb-8">🚨 Priority Remediation (Fix First)
       </h2>
       <div class="space-y-6">
         {% for issue in issues[:2] %}
@@ -192,17 +183,17 @@
               <span class="text-[10px] font-black text-indigo-500 uppercase tracking-widest">{{ i.category }}</span>
             </div>
 
-            <h3 class="text-3xl font-black text-white mb-6 group-hover:text-indigo-400 transition-colors">{{ i.name }}
+            <h3 class="text-3xl font-black text-gray-900 dark:text-white mb-6 group-hover:text-indigo-400 transition-colors">{{ i.name }}
             </h3>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
               <div>
-                <p class="text-[10px] font-black text-red-400 uppercase tracking-widest mb-2">💥 Impact</p>
-                <p class="text-gray-200 font-medium leading-relaxed">{{ i.impact }}</p>
+                <p class="text-[10px] font-black text-red-600 dark:text-red-400 uppercase tracking-widest mb-2">💥 Impact</p>
+                <p class="text-gray-700 dark:text-gray-200 font-medium leading-relaxed">{{ i.impact }}</p>
               </div>
               <div>
-                <p class="text-[10px] font-black text-emerald-400 uppercase tracking-widest mb-2">✅ Fix</p>
-                <p class="text-gray-200 font-medium leading-relaxed">{{ i.fix }}</p>
+                <p class="text-[10px] font-black text-emerald-600 dark:text-emerald-400 uppercase tracking-widest mb-2">✅ Fix</p>
+                <p class="text-gray-700 dark:text-gray-200 font-medium leading-relaxed">{{ i.fix }}</p>
               </div>
             </div>
 
@@ -210,12 +201,12 @@
               <div class="flex items-center gap-6">
                 <div>
                   <span class="text-[9px] font-black text-gray-500 uppercase tracking-widest">🧠 Confidence</span>
-                  <div class="text-sm font-bold text-white">{{ i.confidence }}</div>
+                  <div class="text-sm font-bold text-gray-900 dark:text-white">{{ i.confidence }}</div>
                 </div>
                 {% if i.owasp %}
                 <div>
                   <span class="text-[9px] font-black text-gray-500 uppercase tracking-widest">🛡️ OWASP</span>
-                  <div class="text-sm font-bold text-white">{{ i.owasp }}</div>
+                  <div class="text-sm font-bold text-gray-900 dark:text-white">{{ i.owasp }}</div>
                 </div>
                 {% endif %}
               </div>
