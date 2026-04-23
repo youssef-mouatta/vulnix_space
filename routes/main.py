@@ -17,3 +17,11 @@ def contact():
 @main_bp.route("/thank-you")
 def thank_you():
     return render_template("thank_you.html")
+
+@main_bp.route("/privacy")
+def privacy():
+    return render_template("privacy.html")
+
+@main_bp.route("/terms")
+def terms():
+    return render_template("terms.html")

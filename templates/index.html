@@ -21,7 +21,7 @@
     }
 
     .glass {
-        @apply bg-gray-50/10 dark:bg-white/5 backdrop-blur-xl border border-gray-200/20 dark:border-white/10;
+        @apply bg-white/5 backdrop-blur-xl border border-white/10;
     }
 
     .attack-line {
@@ -53,11 +53,11 @@
             </div>
             
             <h1 class="text-6xl md:text-8xl font-black tracking-tighter leading-[0.9] mb-8 text-gray-900 dark:text-white">
-                Detect Real <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-purple-600">Attack Paths</span> <br>Before Hackers Do
+                Detect Real <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-purple-600">Attack Paths</span> <br>Before Attackers Exploit Them
             </h1>
             
             <p class="max-w-2xl mx-auto text-xl md:text-2xl text-gray-600 dark:text-gray-400 mb-12 leading-relaxed">
-                AI-powered security scanning that reveals how attackers actually exploit your website — not just vulnerabilities.
+                Elite security intelligence for production environments. Revealing the chain of events that lead to data breaches.
             </p>
             
             <div class="flex flex-col sm:flex-row items-center justify-center gap-6">
@@ -68,14 +68,6 @@
                 <a href="#demo" class="px-10 py-5 glass text-gray-900 dark:text-white rounded-2xl font-black uppercase tracking-widest text-sm hover:bg-gray-200/20 dark:hover:bg-white/5 transition-all">
                     View Live Demo
                 </a>
-            </div>
-
-            <!-- PRODUCT PREVIEW -->
-            <div class="mt-20 relative group">
-                <div class="absolute -inset-1 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-3xl blur opacity-20 group-hover:opacity-40 transition duration-1000 group-hover:duration-200"></div>
-                <div class="relative glass rounded-[2.5rem] overflow-hidden shadow-2xl border-white/10">
-                    <img src="{{ url_for('static', filename='img/vulnix_hero_dashboard.png') }}" alt="Vulnix Intelligence Dashboard" class="w-full h-auto transform group-hover:scale-[1.01] transition-transform duration-700">
-                </div>
             </div>
 
             <!-- TRUST SIGNALS -->
@@ -101,53 +93,32 @@
         </div>
     </section>
 
-    <!-- 2. PROBLEM SECTION -->
-    <section class="py-24 relative border-y border-gray-200/10 dark:border-white/5 bg-gray-100/50 dark:bg-black/20">
-        <div class="max-w-5xl mx-auto px-6 text-center">
-            <h2 class="text-4xl md:text-5xl font-black text-gray-900 dark:text-white mb-16 tracking-tight">
-                Most Security Tools Show Problems. <br><span class="text-red-600 dark:text-red-500">They Don’t Show Attacks.</span>
-            </h2>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 text-left">
-                <div class="p-8 glass rounded-3xl border-l-4 border-red-500/50">
-                    <h3 class="text-red-500 font-black uppercase tracking-widest text-xs mb-4">The Failure</h3>
-                    <p class="text-lg text-gray-600 dark:text-gray-300">Traditional scanners flood your inbox with a 40-page list of vulnerabilities. No context. No priority. No clarity on what actually matters.</p>
-                </div>
-                <div class="p-8 glass rounded-3xl border-l-4 border-indigo-500/50">
-                    <h3 class="text-indigo-500 font-black uppercase tracking-widest text-xs mb-4">The Mystery</h3>
-                    <p class="text-lg text-gray-300">Developers don't understand the real-world impact. How does a "Missing Header" lead to a "DB Breach"? Without attack paths, you're flying blind.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- 3. SOLUTION SECTION -->
-    <section class="py-24">
+    <!-- 2. WHY VULNIX SECTION (TASK 5) -->
+    <section class="py-24 bg-gray-50/50 dark:bg-black/20 border-y border-gray-200/10 dark:border-white/5">
         <div class="max-w-7xl mx-auto px-6 text-center">
-            <h2 class="text-5xl font-black text-gray-900 dark:text-white mb-20 italic">Vulnix Shows How You Get Hacked</h2>
-            
+            <h2 class="text-xs font-black text-indigo-600 dark:text-indigo-500 tracking-[0.4em] uppercase mb-12 text-center">Why Vulnix</h2>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div class="p-10 glass rounded-[2.5rem] text-left hover:shadow-xl transition-all">
-                    <div class="text-4xl mb-6">🔍</div>
-                    <h3 class="text-2xl font-black text-gray-900 dark:text-white mb-4 italic">Detect</h3>
-                    <p class="text-gray-600 dark:text-gray-400">Identify real security weaknesses that legacy scanners miss, using our advanced behavioral engine.</p>
+                <div class="p-10 glass rounded-[2.5rem] text-left hover:shadow-xl transition-all border-t-2 border-transparent hover:border-indigo-500/50">
+                    <div class="text-4xl mb-6">🎭</div>
+                    <h3 class="text-2xl font-black text-gray-900 dark:text-white mb-4 italic">Real Attack Simulation</h3>
+                    <p class="text-gray-600 dark:text-gray-400">We don't just find bugs. We simulate real adversary behavior to verify if a weakness is truly exploitable, reducing false positives by 99%.</p>
                 </div>
                 <div class="p-10 glass rounded-[2.5rem] text-left border-t-2 border-indigo-500 hover:shadow-xl transition-all">
-                    <div class="text-4xl mb-6">⚡</div>
-                    <h3 class="text-2xl font-black text-gray-900 dark:text-white mb-4 italic">Simulate</h3>
-                    <p class="text-gray-600 dark:text-gray-400">Reconstruct real-world attack scenarios to see exactly how an attacker would move through your system.</p>
+                    <div class="text-4xl mb-6">🛡️</div>
+                    <h3 class="text-2xl font-black text-gray-900 dark:text-white mb-4 italic">OWASP-Based Detection</h3>
+                    <p class="text-gray-600 dark:text-gray-400">Our engine is built on the foundation of OWASP Top 10, ensuring comprehensive coverage across the most critical web security risks.</p>
                 </div>
-                <div class="p-10 glass rounded-[2.5rem] text-left hover:shadow-xl transition-all">
-                    <div class="text-4xl mb-6">🎯</div>
-                    <h3 class="text-2xl font-black text-gray-900 dark:text-white mb-4 italic">Prioritize</h3>
-                    <p class="text-gray-600 dark:text-gray-400">Know exactly what to fix first based on the actual danger it poses to your business data.</p>
+                <div class="p-10 glass rounded-[2.5rem] text-left hover:shadow-xl transition-all border-t-2 border-transparent hover:border-indigo-500/50">
+                    <div class="text-4xl mb-6">🧠</div>
+                    <h3 class="text-2xl font-black text-gray-900 dark:text-white mb-4 italic">AI-Powered Analysis</h3>
+                    <p class="text-gray-600 dark:text-gray-400">Leverage advanced neural models to understand complex vulnerability chains that manual testing and legacy tools miss entirely.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- 4. ATTACK GRAPH PREVIEW -->
-    <section id="demo" class="py-24 bg-indigo-50 dark:bg-indigo-950/10">
+    <!-- 3. ATTACK GRAPH PREVIEW -->
+    <section id="demo" class="py-24">
         <div class="max-w-5xl mx-auto px-6">
             <div class="glass p-12 rounded-[3rem] border-2 border-indigo-500/20 shadow-2xl">
                 <div class="text-center mb-16">
@@ -187,33 +158,7 @@
         </div>
     </section>
 
-    <!-- 5. FEATURES SECTION -->
-    <section class="py-24">
-        <div class="max-w-7xl mx-auto px-6">
-            <h2 class="text-4xl font-black text-gray-900 dark:text-white text-center mb-20 italic">Elite Security Intelligence</h2>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div class="glass p-8 rounded-3xl hover:bg-gray-100/50 dark:hover:bg-white/5 transition-all">
-                    <h4 class="text-indigo-600 dark:text-indigo-400 font-black text-sm uppercase tracking-widest mb-4">Exploit Chain Detection</h4>
-                    <p class="text-gray-600 dark:text-gray-400 text-sm">Our engine correlates multiple minor weaknesses into a single, high-risk attack story.</p>
-                </div>
-                <div class="glass p-8 rounded-3xl hover:bg-gray-100/50 dark:hover:bg-white/5 transition-all">
-                    <h4 class="text-indigo-600 dark:text-indigo-400 font-black text-sm uppercase tracking-widest mb-4">Real Attack Simulation</h4>
-                    <p class="text-gray-600 dark:text-gray-400 text-sm">Execute harmless behavioral payloads to verify if a weakness is actually exploitable in production.</p>
-                </div>
-                <div class="glass p-8 rounded-3xl hover:bg-gray-100/50 dark:hover:bg-white/5 transition-all">
-                    <h4 class="text-indigo-600 dark:text-indigo-400 font-black text-sm uppercase tracking-widest mb-4">AI Risk Intelligence</h4>
-                    <p class="text-gray-600 dark:text-gray-400 text-sm">Go beyond "High/Medium/Low" with AI-driven summaries of your actual business risk.</p>
-                </div>
-                <div class="glass p-8 rounded-3xl hover:bg-gray-100/50 dark:hover:bg-white/5 transition-all">
-                    <h4 class="text-indigo-600 dark:text-indigo-400 font-black text-sm uppercase tracking-widest mb-4">Priority Fix Engine</h4>
-                    <p class="text-gray-600 dark:text-gray-400 text-sm">Get copy-paste remediation scripts tailored to your specific framework and infrastructure.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- 6. PRICING & UPGRADE PREVIEW -->
+    <!-- 4. PRICING SECTION (TASK 1) -->
     <section class="py-24 bg-gray-50/50 dark:bg-black/40 border-t border-gray-200/20 dark:border-white/5">
         <div class="max-w-7xl mx-auto px-6">
             <div class="text-center mb-20">
@@ -221,49 +166,51 @@
                 <p class="text-gray-600 dark:text-gray-500 font-mono text-sm">Unlock full security intelligence with our Pro tier.</p>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-7xl mx-auto">
                 <!-- FREE -->
-                <div class="glass p-10 rounded-[3rem] flex flex-col hover:border-indigo-500/50 transition-all opacity-90">
+                <div class="glass p-10 rounded-[3rem] flex flex-col hover:border-indigo-500/50 transition-all opacity-90 border border-white/5">
                     <h3 class="text-xl font-bold mb-2 text-gray-900 dark:text-white">Free Intelligence</h3>
                     <div class="text-4xl font-black text-gray-900 dark:text-white mb-6">$0<span class="text-sm text-gray-500">/mo</span></div>
                     <ul class="space-y-4 mb-10 flex-grow text-sm text-gray-400 font-bold">
-                        <li class="flex items-center"><i class="fa-solid fa-check text-indigo-500 mr-2"></i> Basic Surface Scan</li>
-                        <li class="flex items-center"><i class="fa-solid fa-check text-indigo-500 mr-2"></i> Limited Results (3)</li>
-                        <li class="flex items-center text-gray-600 italic">🔒 Locked Attack Chains</li>
+                        <li class="flex items-center"><i class="fa-solid fa-check text-indigo-500 mr-2"></i> Basic scan</li>
+                        <li class="flex items-center"><i class="fa-solid fa-check text-indigo-500 mr-2"></i> Limited results</li>
+                        <li class="flex items-center text-gray-600/50 italic"><i class="fa-solid fa-lock text-gray-600 mr-2"></i> No exploit chains</li>
                     </ul>
-                    <a href="{{ url_for('auth.register') }}" class="py-4 rounded-xl border border-white/10 text-white font-black text-center uppercase tracking-widest text-xs">Scan Now</a>
+                    <a href="{{ url_for('auth.register') }}" class="py-4 rounded-xl border border-white/10 text-white font-black text-center uppercase tracking-widest text-xs hover:bg-white/5 transition-all">Scan Now</a>
                 </div>
 
                 <!-- PRO -->
-                <div class="glass p-10 rounded-[3rem] flex flex-col border-2 border-indigo-600 shadow-xl dark:shadow-[0_0_50px_rgba(99,102,241,0.2)] scale-105 z-10">
-                    <div class="bg-indigo-600 text-white text-[10px] font-black px-4 py-1 rounded-full w-max mb-6 uppercase tracking-widest">Recommended</div>
+                <div class="glass p-10 rounded-[3rem] flex flex-col border-2 border-indigo-600/50 shadow-xl dark:shadow-[0_0_50px_rgba(99,102,241,0.2)] z-10">
+                    <div class="bg-indigo-600 text-white text-[10px] font-black px-4 py-1 rounded-full w-max mb-6 uppercase tracking-widest">Most Popular</div>
                     <h3 class="text-xl font-bold mb-2 text-gray-900 dark:text-white">Intelligence Pro</h3>
                     <div class="text-4xl font-black text-gray-900 dark:text-white mb-6">$7<span class="text-sm text-gray-500">/mo</span></div>
                     <ul class="space-y-4 mb-10 flex-grow text-sm text-gray-300 font-bold">
-                        <li class="flex items-center"><i class="fa-solid fa-check text-indigo-500 mr-2"></i> Full Exploit Simulation</li>
-                        <li class="flex items-center"><i class="fa-solid fa-check text-indigo-500 mr-2"></i> Advanced Attack Chains</li>
-                        <li class="flex items-center"><i class="fa-solid fa-check text-indigo-500 mr-2"></i> AI Deep Analysis</li>
-                        <li class="flex items-center"><i class="fa-solid fa-check text-indigo-500 mr-2"></i> Priority Fix Engine</li>
+                        <li class="flex items-center"><i class="fa-solid fa-check text-indigo-500 mr-2"></i> Full vulnerability analysis</li>
+                        <li class="flex items-center"><i class="fa-solid fa-check text-indigo-500 mr-2"></i> Exploit chain detection</li>
+                        <li class="flex items-center"><i class="fa-solid fa-check text-indigo-500 mr-2"></i> AI risk explanations</li>
+                        <li class="flex items-center"><i class="fa-solid fa-check text-indigo-500 mr-2"></i> Priority fix engine</li>
                     </ul>
-                    <a href="{{ url_for('auth.register') }}" class="py-4 rounded-xl bg-indigo-600 text-white font-black text-center uppercase tracking-widest text-xs glow-hover transition-all">Upgrade to Pro</a>
+                    <a href="https://buy.lemonsqueezy.com/your-pro-link" class="py-4 rounded-xl bg-indigo-600 text-white font-black text-center uppercase tracking-widest text-xs glow-hover transition-all">Upgrade to Pro</a>
                 </div>
 
-                <!-- BUSINESS -->
-                <div class="glass p-10 rounded-[3rem] flex flex-col hover:border-white/20 transition-all opacity-80">
-                    <h3 class="text-xl font-bold mb-2">Enterprise Suite</h3>
-                    <div class="text-4xl font-black text-white mb-6">$20<span class="text-sm text-gray-500">/mo</span></div>
-                    <ul class="space-y-4 mb-10 flex-grow text-sm text-gray-400 font-bold">
-                        <li class="flex items-center"><i class="fa-solid fa-check text-indigo-500 mr-2"></i> API Infrastructure</li>
-                        <li class="flex items-center"><i class="fa-solid fa-check text-indigo-500 mr-2"></i> Unlimited Assets</li>
-                        <li class="flex items-center"><i class="fa-solid fa-check text-indigo-500 mr-2"></i> 24/7 Red Team Support</li>
+                <!-- BUSINESS (NEW) -->
+                <div class="glass p-10 rounded-[3rem] flex flex-col border border-purple-500/30 hover:border-purple-500/60 transition-all shadow-xl dark:shadow-[0_0_50px_rgba(168,85,247,0.1)]">
+                    <div class="bg-purple-600 text-white text-[10px] font-black px-4 py-1 rounded-full w-max mb-6 uppercase tracking-widest">Enterprise Ready</div>
+                    <h3 class="text-xl font-bold mb-2 text-gray-900 dark:text-white">Business Elite</h3>
+                    <div class="text-4xl font-black text-gray-900 dark:text-white mb-6">$20<span class="text-sm text-gray-500">/mo</span></div>
+                    <ul class="space-y-4 mb-10 flex-grow text-sm text-gray-300 font-bold">
+                        <li class="flex items-center"><i class="fa-solid fa-check text-purple-500 mr-2"></i> Everything in Pro</li>
+                        <li class="flex items-center"><i class="fa-solid fa-check text-purple-500 mr-2"></i> API Access (JSON Export)</li>
+                        <li class="flex items-center"><i class="fa-solid fa-check text-purple-500 mr-2"></i> Compliance Reporting</li>
+                        <li class="flex items-center"><i class="fa-solid fa-check text-purple-500 mr-2"></i> Priority support</li>
                     </ul>
-                    <a href="{{ url_for('auth.register') }}" class="py-4 rounded-xl border border-white/10 text-white font-black text-center uppercase tracking-widest text-xs">Contact Sales</a>
+                    <a href="https://buy.lemonsqueezy.com/your-business-link" class="py-4 rounded-xl bg-purple-600 text-white font-black text-center uppercase tracking-widest text-xs hover:bg-purple-500 transition-all">Go Business</a>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- 7. FINAL CTA -->
+    <!-- 5. FINAL CTA -->
     <section class="py-32 relative overflow-hidden">
         <div class="max-w-4xl mx-auto px-6 text-center relative z-10">
             <h2 class="text-5xl md:text-7xl font-black text-gray-900 dark:text-white mb-8 tracking-tighter italic">Your website may already <br>be exposed.</h2>
@@ -291,3 +238,4 @@
     }
 </style>
 {% endblock %}
+% endblock %}

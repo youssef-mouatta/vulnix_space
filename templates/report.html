@@ -94,13 +94,26 @@
     </div>
 
     <!-- 2. AI SUMMARY (REALISTIC & DIRECT) -->
-    <div class="bg-indigo-50 dark:bg-white/[0.03] p-10 border-l-8 border-indigo-600 rounded-[2rem] backdrop-blur-xl">
+    <div class="bg-indigo-50 dark:bg-white/[0.03] p-10 border-l-8 border-indigo-600 rounded-[2rem] backdrop-blur-xl relative overflow-hidden">
+      {% if user_tier == 'free' %}
+      <div class="absolute inset-0 bg-gray-900/10 backdrop-blur-[2px] flex items-center justify-center z-10">
+          <div class="bg-indigo-600 text-white px-6 py-2 rounded-full text-xs font-black uppercase tracking-widest shadow-xl">
+              <i class="fa-solid fa-lock mr-2"></i> Full AI Analysis (Pro Only)
+          </div>
+      </div>
+      {% endif %}
       <div class="flex items-start gap-8">
         <div class="text-4xl">🧠</div>
         <div>
           <h3 class="text-[14px] font-black text-indigo-500 uppercase tracking-[0.4em] mb-4">AI Intelligence Objective
           </h3>
-          <p class="text-xl font-bold text-gray-900 dark:text-gray-100 leading-tight">{{ ai_summary }}</p>
+          <p class="text-xl font-bold text-gray-900 dark:text-gray-100 leading-tight">
+              {% if user_tier == 'free' %}
+              This surface scan reveals basic reconnaissance data. Upgrade to Pro for deep neural analysis of your specific risk profile.
+              {% else %}
+              {{ ai_summary }}
+              {% endif %}
+          </p>
         </div>
       </div>
     </div>
@@ -133,10 +146,11 @@
 
         {% if user_tier == 'free' %}
         <div
-          class="absolute inset-0 bg-gray-900/40 backdrop-blur-[3px] flex items-center justify-center pointer-events-none">
-          <div class="text-center p-8">
+          class="absolute inset-0 bg-gray-900/60 backdrop-blur-[6px] flex items-center justify-center">
+          <div class="text-center p-8 bg-indigo-600/20 rounded-3xl border border-white/10 backdrop-blur-md">
             <div class="text-3xl mb-4">🔒</div>
-            <p class="text-xs font-black text-white uppercase tracking-widest">Advanced Simulations Gated</p>
+            <p class="text-sm font-black text-white uppercase tracking-widest mb-4">Exploit Chains (Pro Only)</p>
+            <a href="{{ url_for('main.pricing') }}" class="px-6 py-2 bg-white text-indigo-600 rounded-full text-[10px] font-black uppercase tracking-widest hover:scale-105 transition-transform">Unlock Chains</a>
           </div>
         </div>
         {% endif %}

@@ -31,10 +31,44 @@
         body { font-family: var(--brand-font); }
         .font-mono { font-family: var(--mono-font); }
         
-        /* Prose dark mode fixes */
-        .dark .prose { color: #d1d5db; }
-        .dark .prose h1, .dark .prose h2, .dark .prose h3 { color: #f3f4f6; }
-        .dark .prose code { color: #9ca3af; background: #374151; padding: 2px 4px; border-radius: 4px; }
+        /* Navbar Link Hover Effect */
+        .nav-link {
+            position: relative;
+            transition: color 0.3s;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--vulnix-accent, #6366f1);
+            transition: width 0.3s;
+        }
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        .nav-link:hover {
+            color: #6366f1;
+        }
+
+        /* Premium Animations */
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 15px rgba(99, 102, 241, 0.3); }
+            50% { box-shadow: 0 0 30px rgba(99, 102, 241, 0.6); }
+        }
+        .glow-hover:hover {
+            animation: pulse-glow 2s infinite;
+        }
+        .glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        .dark .glass {
+            background: rgba(255, 255, 255, 0.02);
+        }
     </style>
     {% block head %}{% endblock %}
 </head>
@@ -86,13 +120,17 @@
                     </button>
                     
                     {% if current_user.is_authenticated %}
-                        <a href="{{ url_for('main.pricing') }}" class="text-sm font-black uppercase tracking-widest text-gray-600 dark:text-gray-400 hover:text-indigo-500 dark:hover:text-indigo-400 transition-colors">Pricing</a>
-                        <a href="{{ url_for('main.contact') }}" class="text-sm font-black uppercase tracking-widest text-gray-600 dark:text-gray-400 hover:text-indigo-500 dark:hover:text-indigo-400 transition-colors">Contact</a>
+                        <a href="{{ url_for('main.pricing') }}" class="nav-link text-sm font-black uppercase tracking-widest text-gray-600 dark:text-gray-400">Pricing</a>
+                        <a href="{{ url_for('main.contact') }}" class="nav-link text-sm font-black uppercase tracking-widest text-gray-600 dark:text-gray-400">Contact</a>
+                        <a href="{{ url_for('main.privacy') }}" class="nav-link text-sm font-black uppercase tracking-widest text-gray-600 dark:text-gray-400">Privacy</a>
+                        <a href="{{ url_for('main.terms') }}" class="nav-link text-sm font-black uppercase tracking-widest text-gray-600 dark:text-gray-400">Terms</a>
                         <a href="{{ url_for('user.dashboard') }}" class="text-sm font-black uppercase tracking-widest text-gray-600 dark:text-gray-400 hover:text-indigo-500 dark:hover:text-indigo-400 transition-colors">Dashboard</a>
                         <a href="{{ url_for('auth.logout') }}" class="text-sm font-black uppercase tracking-widest text-red-500/80 hover:text-red-500 transition-colors">Logout</a>
                     {% else %}
-                        <a href="{{ url_for('main.pricing') }}" class="text-sm font-black uppercase tracking-widest text-gray-600 dark:text-gray-400 hover:text-indigo-500 dark:hover:text-indigo-400 transition-colors">Pricing</a>
-                        <a href="{{ url_for('main.contact') }}" class="text-sm font-black uppercase tracking-widest text-gray-600 dark:text-gray-400 hover:text-indigo-500 dark:hover:text-indigo-400 transition-colors">Contact</a>
+                        <a href="{{ url_for('main.pricing') }}" class="nav-link text-sm font-black uppercase tracking-widest text-gray-600 dark:text-gray-400">Pricing</a>
+                        <a href="{{ url_for('main.contact') }}" class="nav-link text-sm font-black uppercase tracking-widest text-gray-600 dark:text-gray-400">Contact</a>
+                        <a href="{{ url_for('main.privacy') }}" class="nav-link text-sm font-black uppercase tracking-widest text-gray-600 dark:text-gray-400">Privacy</a>
+                        <a href="{{ url_for('main.terms') }}" class="nav-link text-sm font-black uppercase tracking-widest text-gray-600 dark:text-gray-400">Terms</a>
                         <a href="{{ url_for('auth.login') }}" class="text-sm font-black uppercase tracking-widest text-gray-600 dark:text-gray-400 hover:text-indigo-500 transition-colors">Login</a>
                         <a href="{{ url_for('auth.register') }}" class="bg-indigo-600 text-white hover:bg-indigo-700 px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest shadow-[0_0_15px_rgba(99,102,241,0.3)] transition-all transform hover:-translate-y-0.5">Explore Intelligence</a>
                     {% endif %}
@@ -125,10 +163,15 @@
             <div class="text-gray-500 text-[10px] font-black uppercase tracking-[0.3em]">
                 &copy; 2026 Vulnix. Distributed Intelligence.
             </div>
-            <div class="flex items-center gap-8">
-                <a href="https://vulnix.space" class="text-gray-500 hover:text-indigo-400 transition-colors text-[10px] font-black uppercase tracking-widest">Platform</a>
-                <a href="#" class="text-gray-500 hover:text-indigo-400 transition-colors text-[10px] font-black uppercase tracking-widest">Docs</a>
-                <a href="#" class="text-gray-500 hover:text-indigo-400 transition-colors text-[10px] font-black uppercase tracking-widest">Terminus</a>
+            <div class="flex flex-col md:flex-row items-center gap-8">
+                <a href="mailto:vulnix.space@gmail.com" class="text-gray-500 hover:text-indigo-400 transition-colors text-[10px] font-black uppercase tracking-widest">vulnix.space@gmail.com</a>
+                <div class="flex items-center gap-8">
+                    <a href="{{ url_for('main.index') }}" class="nav-link text-gray-500 text-[10px] font-black uppercase tracking-widest">Platform</a>
+                    <a href="{{ url_for('main.pricing') }}" class="nav-link text-gray-500 text-[10px] font-black uppercase tracking-widest">Pricing</a>
+                    <a href="{{ url_for('main.contact') }}" class="nav-link text-gray-500 text-[10px] font-black uppercase tracking-widest">Contact</a>
+                    <a href="{{ url_for('main.privacy') }}" class="nav-link text-gray-500 text-[10px] font-black uppercase tracking-widest">Privacy</a>
+                    <a href="{{ url_for('main.terms') }}" class="nav-link text-gray-500 text-[10px] font-black uppercase tracking-widest">Terms</a>
+                </div>
             </div>
         </div>
     </footer>

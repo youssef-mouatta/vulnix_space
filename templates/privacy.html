@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}Privacy Policy — Vulnix{% endblock %}
+
+{% block content %}
+<div class="bg-gray-50 dark:bg-gray-900 py-24 transition-colors duration-200">
+    <div class="max-w-4xl mx-auto px-6">
+        <h1 class="text-4xl md:text-6xl font-black tracking-tighter text-gray-900 dark:text-white mb-12">
+            Privacy <span class="text-indigo-500">Policy</span>
+        </h1>
+        
+        <div class="prose prose-indigo dark:prose-invert max-w-none space-y-8 text-gray-600 dark:text-gray-400">
+            <section>
+                <h2 class="text-2xl font-bold text-gray-900 dark:text-white uppercase tracking-widest text-sm mb-4">1. Data Collection</h2>
+                <p>We collect minimal data necessary to provide our security services. This includes:</p>
+                <ul class="list-disc pl-6 space-y-2">
+                    <li><strong>Account Information:</strong> Your email address and password (encrypted) for authentication.</li>
+                    <li><strong>Scan Data:</strong> Target URLs, scan history, and vulnerability findings generated during your use of the platform.</li>
+                    <li><strong>Technical Data:</strong> IP addresses and browser information for security monitoring and abuse prevention.</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2 class="text-2xl font-bold text-gray-900 dark:text-white uppercase tracking-widest text-sm mb-4">2. Usage of Data</h2>
+                <p>Your data is used exclusively to:</p>
+                <ul class="list-disc pl-6 space-y-2">
+                    <li>Generate security reports and provide risk intelligence.</li>
+                    <li>Communicate critical security alerts or account updates.</li>
+                    <li>Improve our detection engine using anonymized, aggregated scan results.</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2 class="text-2xl font-bold text-gray-900 dark:text-white uppercase tracking-widest text-sm mb-4">3. Security Practices</h2>
+                <p>Vulnix employs industry-standard encryption (AES-256) for data at rest and TLS 1.3 for data in transit. We conduct regular internal security audits of our infrastructure to ensure your scan data remains confidential.</p>
+            </section>
+
+            <section>
+                <h2 class="text-2xl font-bold text-gray-900 dark:text-white uppercase tracking-widest text-sm mb-4">4. No Selling of Data</h2>
+                <p>We have a strict policy: <strong>We do not sell, trade, or rent your personal data</strong> or scan findings to third parties. Your security posture is your business alone.</p>
+            </section>
+
+            <section>
+                <h2 class="text-2xl font-bold text-gray-900 dark:text-white uppercase tracking-widest text-sm mb-4">5. Contact</h2>
+                <p>For any privacy-related inquiries, please contact us at: <a href="mailto:vulnix.space@gmail.com" class="text-indigo-500 font-bold underline">vulnix.space@gmail.com</a></p>
+            </section>
+        </div>
+    </div>
+</div>
+{% endblock %}
