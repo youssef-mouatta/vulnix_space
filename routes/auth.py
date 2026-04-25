@@ -45,6 +45,9 @@ def login():
         user = User.query.filter_by(username=username).first()
         if user and check_password_hash(user.password, password):
             login_user(user)
+            next_page = request.args.get("next")
+            if next_page and next_page.startswith("/"):
+                return redirect(next_page)
             return redirect(url_for("user.dashboard"))
         else:
             flash("Invalid credentials.")

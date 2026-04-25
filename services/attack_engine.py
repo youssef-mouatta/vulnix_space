@@ -70,7 +70,7 @@ def simulate_xss(url, session=None):
                     "evidence": p["val"], 
                     "param": param
                 }
-            except:
+            except Exception:
                 continue
 
     return {"level": "none"}
@@ -90,7 +90,7 @@ def check_open_redirect(url, session=None):
             location = r.headers.get("Location", "")
             if payload in location or location.startswith(payload):
                 return {"found": True, "payload": payload, "param": param}
-        except:
+        except Exception:
             pass
     return {"found": False}
 
@@ -117,6 +117,6 @@ def check_sensitive_files(base_url, session=None):
                 if not is_html_doc:
                     if any(k in content for k in ["db_", "password", "aws_", "secret", "[core]", "version"]):
                         found.append(p)
-        except:
+        except Exception:
             pass
     return found

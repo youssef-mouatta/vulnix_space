@@ -1,7 +1,7 @@
 """Tier-based redaction of scan artifacts (applied at read time, not only at save)."""
 from copy import deepcopy
 
-_POC_UPGRADE_MSG = "Upgrade to Business for PoC"
+_POC_UPGRADE_MSG = "Upgrade to Pro for PoC"
 
 
 def apply_plan_limits(user_tier, issues):
