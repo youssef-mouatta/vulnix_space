@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Dev-only default; production refuses to start with this value (see create_app).
-_DEFAULT_DEV_SECRET = "super-secret-saas-key-change-in-prod"
+_DEFAULT_DEV_SECRET = "9fK#2Lm@Xz91!QaP$R8vNw#SecureVulnix2026"
 
 
 class Config:
