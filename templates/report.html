@@ -60,6 +60,40 @@
     transform: translateY(-2px);
     box-shadow: 0 15px 30px -5px rgba(79, 70, 229, 0.6);
   }
+
+  .ai-chat-panel {
+    background: linear-gradient(180deg, rgba(15, 23, 42, 0.9), rgba(2, 6, 23, 0.92));
+    border: 1px solid rgba(99, 102, 241, 0.25);
+    box-shadow: 0 35px 80px -45px rgba(79, 70, 229, 0.55);
+  }
+
+  .chat-message-ai {
+    background: rgba(30, 41, 59, 0.82);
+    border: 1px solid rgba(99, 102, 241, 0.3);
+  }
+
+  .chat-message-user {
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.28), rgba(79, 70, 229, 0.3));
+    border: 1px solid rgba(129, 140, 248, 0.5);
+  }
+
+  .chat-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(99, 102, 241, 0.6) rgba(15, 23, 42, 0.5);
+  }
+
+  .chat-scroll::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .chat-scroll::-webkit-scrollbar-track {
+    background: rgba(15, 23, 42, 0.5);
+  }
+
+  .chat-scroll::-webkit-scrollbar-thumb {
+    background: rgba(99, 102, 241, 0.6);
+    border-radius: 999px;
+  }
 </style>
 {% endblock %}
 
@@ -90,29 +124,33 @@
           <span class="w-3 h-3 bg-indigo-600 dark:bg-indigo-500 rounded-full mr-4 animate-ping"></span>
           {{ target }}
         </p>
+        {% if current_user.is_authenticated %}
+        <p class="mt-4">
+          <a href="{{ url_for('user.dashboard') }}" class="text-sm font-bold text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 dark:hover:text-indigo-300 transition-colors inline-flex items-center gap-2">
+            <i class="fa-solid fa-arrow-left"></i>
+            Back to dashboard · scan another domain
+          </a>
+        </p>
+        {% else %}
+        <p class="mt-4">
+          <a href="{{ url_for('auth.login', next=url_for('user.dashboard')) }}" class="text-sm font-bold text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 dark:hover:text-indigo-300 transition-colors inline-flex items-center gap-2">
+            <i class="fa-solid fa-right-to-bracket"></i>
+            Sign in to scan your own domains
+          </a>
+        </p>
+        {% endif %}
       </div>
     </div>
 
     <!-- 2. AI SUMMARY (REALISTIC & DIRECT) -->
     <div class="bg-indigo-50 dark:bg-white/[0.03] p-10 border-l-8 border-indigo-600 rounded-[2rem] backdrop-blur-xl relative overflow-hidden">
-      {% if user_tier == 'free' %}
-      <div class="absolute inset-0 bg-gray-900/10 backdrop-blur-[2px] flex items-center justify-center z-10">
-          <div class="bg-indigo-600 text-white px-6 py-2 rounded-full text-xs font-black uppercase tracking-widest shadow-xl">
-              <i class="fa-solid fa-lock mr-2"></i> Full AI Analysis (Pro Only)
-          </div>
-      </div>
-      {% endif %}
       <div class="flex items-start gap-8">
         <div class="text-4xl">🧠</div>
         <div>
           <h3 class="text-[14px] font-black text-indigo-500 uppercase tracking-[0.4em] mb-4">AI Intelligence Objective
           </h3>
           <p class="text-xl font-bold text-gray-900 dark:text-gray-100 leading-tight">
-              {% if user_tier == 'free' %}
-              This surface scan reveals basic reconnaissance data. Upgrade to Pro for deep neural analysis of your specific risk profile.
-              {% else %}
               {{ ai_summary }}
-              {% endif %}
           </p>
         </div>
       </div>
@@ -128,7 +166,7 @@
       <div class="space-y-6">
         {% for issue in issues[:2] %}
         <div class="glass-card p-6 border-l-4 border-red-500 hover:bg-white/5 transition-colors">
-          <div class="font-black text-white text-lg mb-2">{{ issue.name }}</div>
+          <div class="font-black text-gray-900 dark:text-white text-lg mb-2">{{ issue.name }}</div>
           <p class="text-sm text-gray-500 leading-tight">{{ issue.impact }}</p>
         </div>
         {% endfor %}
@@ -137,23 +175,33 @@
 
     <!-- 4. ATTACK GRAPH (PROMINENT) -->
     <div class="lg:col-span-7">
-      <div class="glass-card p-8 h-full flex flex-col group relative overflow-hidden">
-        <div class="flex justify-between items-center mb-6">
-          <h2 class="text-xs font-black text-indigo-900 uppercase tracking-[0.2em]">💥 Proposed Attack Chain</h2>
-          <span class="text-[15px] px-4 py-2 bg-indigo-1000 text-indigo-500 rounded font-mono">Live Simulation</span>
-        </div>
-        <div id="graph" class="flex-grow min-h-[500px] rounded-2xl bg-black/50 border border-white/10"></div>
-
-        {% if user_tier == 'free' %}
-        <div
-          class="absolute inset-0 bg-gray-900/60 backdrop-blur-[6px] flex items-center justify-center">
-          <div class="text-center p-8 bg-indigo-600/20 rounded-3xl border border-white/10 backdrop-blur-md">
-            <div class="text-3xl mb-4">🔒</div>
-            <p class="text-sm font-black text-white uppercase tracking-widest mb-4">Exploit Chains (Pro Only)</p>
-            <a href="{{ url_for('main.pricing') }}" class="px-6 py-2 bg-white text-indigo-600 rounded-full text-[10px] font-black uppercase tracking-widest hover:scale-105 transition-transform">Unlock Chains</a>
+      <div class="glass-card p-4 sm:p-8 h-full flex flex-col group relative overflow-hidden">
+        <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-4">
+          <div>
+            <h2 class="text-xs font-black text-indigo-900 dark:text-indigo-400 uppercase tracking-[0.2em] mb-2">Risk story (attack chains)</h2>
+            <p class="text-sm text-gray-600 dark:text-gray-400 max-w-xl leading-relaxed">
+              Each <span class="font-semibold text-gray-800 dark:text-gray-200">row</span> reads <span class="font-mono text-indigo-600 dark:text-indigo-400">left → right</span>:
+              where an attacker starts, how the issue escalates, and the harm to users or data.
+            </p>
+          </div>
+          <div class="flex flex-wrap items-center gap-2 shrink-0">
+            <span class="text-[9px] font-black uppercase tracking-widest text-gray-500 dark:text-gray-500">Legend</span>
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-indigo-500/15 border border-indigo-500/30 text-[10px] font-bold text-indigo-700 dark:text-indigo-300">
+              <span class="w-2.5 h-2.5 rounded-full bg-indigo-500"></span> Entry
+            </span>
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-amber-500/15 border border-amber-500/30 text-[10px] font-bold text-amber-800 dark:text-amber-200">
+              <span class="w-2.5 h-2.5 rotate-45 bg-amber-500 border border-amber-600"></span> Escalation
+            </span>
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-red-500/15 border border-red-500/30 text-[10px] font-bold text-red-800 dark:text-red-200">
+              <span class="text-red-500">★</span> Impact
+            </span>
           </div>
         </div>
-        {% endif %}
+        <p id="graph-summary" class="text-xs text-gray-600 dark:text-gray-400 mb-3 min-h-[2.5rem] leading-relaxed border-l-2 border-indigo-500/40 pl-3"></p>
+        <div id="graph" class="flex-grow min-h-[380px] sm:min-h-[460px] rounded-2xl bg-slate-950 dark:bg-black/60 border border-gray-200 dark:border-white/10"></div>
+        <p class="mt-3 text-[10px] font-mono text-gray-500 dark:text-gray-500 uppercase tracking-widest">
+          Arrows show causal order — not a guarantee an exploit will succeed, but why the combination matters.
+        </p>
       </div>
     </div>
   </div>
@@ -246,6 +294,88 @@
     </div>
   </div>
 
+  <section class="mb-20">
+    <div class="ai-chat-panel rounded-[2rem] p-8 sm:p-10">
+      <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6 mb-8">
+        <div>
+          <h2 class="text-3xl font-black tracking-tight text-white">AI Security Assistant</h2>
+          <p class="text-indigo-200/90 mt-2">Ask questions about your vulnerabilities, risks, and remediation steps.</p>
+          <p class="text-xs font-black uppercase tracking-[0.2em] text-indigo-300 mt-4">Context-aware · evidence-only · anti-hallucination</p>
+        </div>
+        <div class="rounded-xl border border-indigo-400/30 bg-indigo-500/10 px-4 py-3 text-xs font-bold uppercase tracking-wider text-indigo-200">
+          {% if user_tier == 'free' %}
+          Free plan: <span id="chat-counter">{{ 5 }}</span> AI messages left
+          {% else %}
+          Pro plan: Unlimited AI assistant
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 xl:grid-cols-12 gap-6">
+        <aside class="xl:col-span-4 rounded-2xl border border-white/10 bg-slate-900/60 p-5">
+          <h3 class="text-sm font-black uppercase tracking-[0.2em] text-indigo-300 mb-4">Suggested questions</h3>
+          <div class="space-y-3" id="suggested-questions">
+            <button type="button" class="w-full text-left px-4 py-3 rounded-xl border border-indigo-500/30 bg-indigo-500/10 hover:bg-indigo-500/20 text-sm text-indigo-100 transition" data-q="What is my most critical vulnerability?">What is my most critical vulnerability?</button>
+            <button type="button" class="w-full text-left px-4 py-3 rounded-xl border border-indigo-500/30 bg-indigo-500/10 hover:bg-indigo-500/20 text-sm text-indigo-100 transition" data-q="Which issue can lead to account takeover?">Which issue can lead to account takeover?</button>
+            <button type="button" class="w-full text-left px-4 py-3 rounded-xl border border-indigo-500/30 bg-indigo-500/10 hover:bg-indigo-500/20 text-sm text-indigo-100 transition" data-q="How should I prioritize fixes?">How should I prioritize fixes?</button>
+            <button type="button" class="w-full text-left px-4 py-3 rounded-xl border border-indigo-500/30 bg-indigo-500/10 hover:bg-indigo-500/20 text-sm text-indigo-100 transition" data-q="Can this become a full exploit chain?">Can this become a full exploit chain?</button>
+            <button type="button" class="w-full text-left px-4 py-3 rounded-xl border border-indigo-500/30 bg-indigo-500/10 hover:bg-indigo-500/20 text-sm text-indigo-100 transition" data-q="How dangerous is this XSS?">How dangerous is this XSS?</button>
+            <button type="button" class="w-full text-left px-4 py-3 rounded-xl border border-indigo-500/30 bg-indigo-500/10 hover:bg-indigo-500/20 text-sm text-indigo-100 transition" data-q="How do I fix missing CSP correctly?">How do I fix missing CSP correctly?</button>
+          </div>
+        </aside>
+
+        <div class="xl:col-span-8 rounded-2xl border border-white/10 bg-slate-950/70 p-5 sm:p-6 flex flex-col">
+          <div id="chat-history" class="chat-scroll h-[420px] overflow-y-auto space-y-4 pr-2">
+            <div class="chat-message-ai rounded-2xl p-4 text-sm text-slate-100">
+              <p class="font-black text-indigo-300 uppercase tracking-widest text-[10px] mb-2">AI Security Assistant</p>
+              <p>Ask me about exploitability, impact, and fix order. I will answer using only this scan's evidence.</p>
+              <div class="mt-3 text-xs text-indigo-200/80 space-y-1">
+                <p><strong>RISK:</strong> realistic danger based on findings</p>
+                <p><strong>IMPACT:</strong> attacker outcomes</p>
+                <p><strong>FIX:</strong> implementation-ready remediation</p>
+                <p><strong>PRIORITY:</strong> Fix Now, Fix Soon, or Monitor</p>
+              </div>
+            </div>
+          </div>
+
+          <div id="chat-upgrade-banner" class="hidden mt-4 rounded-xl border border-amber-400/30 bg-amber-500/10 p-4">
+            <p class="text-amber-100 font-bold text-sm">🔒 Unlock unlimited AI Security Assistant with Pro</p>
+            <a href="/pricing" class="inline-flex mt-2 text-xs font-black uppercase tracking-widest text-amber-300 hover:text-amber-200">Upgrade now</a>
+          </div>
+
+          <form id="chat-form" class="mt-4 flex gap-3">
+            <input id="chat-input" type="text" maxlength="500" placeholder="Ask about risk, impact, exploit chains, or remediation..."
+              class="flex-1 rounded-xl border border-indigo-400/30 bg-slate-900/70 px-4 py-3 text-sm text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            <button id="chat-send" type="submit" class="rounded-xl bg-indigo-600 hover:bg-indigo-500 px-5 py-3 text-xs font-black uppercase tracking-widest text-white transition">
+              Send
+            </button>
+          </form>
+          <p id="chat-status" class="mt-2 text-xs text-slate-400"></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="mt-16 mb-8 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 p-8 rounded-[2rem] border border-gray-200/80 dark:border-white/10 bg-white/60 dark:bg-gray-900/40 backdrop-blur-sm">
+    <div>
+      <p class="text-xs font-black uppercase tracking-[0.2em] text-indigo-600 dark:text-indigo-400 mb-2">Next scan</p>
+      <p class="text-gray-700 dark:text-gray-300 font-medium">Run intelligence on another URL from your dashboard.</p>
+    </div>
+    {% if current_user.is_authenticated %}
+    <a href="{{ url_for('user.dashboard') }}"
+      class="inline-flex shrink-0 items-center justify-center gap-2 px-8 py-4 rounded-2xl text-sm font-black uppercase tracking-widest text-white bg-indigo-600 hover:bg-indigo-500 shadow-lg shadow-indigo-500/30 transition-all hover:-translate-y-0.5 whitespace-nowrap">
+      <i class="fa-solid fa-radar"></i>
+      Scan another domain
+    </a>
+    {% else %}
+    <a href="{{ url_for('auth.login', next=url_for('user.dashboard')) }}"
+      class="inline-flex shrink-0 items-center justify-center gap-2 px-8 py-4 rounded-2xl text-sm font-black uppercase tracking-widest text-white bg-indigo-600 hover:bg-indigo-500 shadow-lg shadow-indigo-500/30 transition-all hover:-translate-y-0.5 whitespace-nowrap">
+      <i class="fa-solid fa-radar"></i>
+      Sign in to scan
+    </a>
+    {% endif %}
+  </div>
+
 </div>
 
 <script src="/static/app.js"></script>
@@ -253,11 +383,21 @@
 <script>
   const issues = {{ issues | tojson | safe }};
   const isFree = {{ (user_tier == 'free') | tojson }};
+  const scanId = {{ scan.id | tojson }};
+  const chatStorageKey = `vulnix-ai-chat-${scanId}`;
+  const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+  let chatRemaining = isFree ? 5 : null;
 
   document.addEventListener('DOMContentLoaded', () => {
     if (typeof renderGraph === 'function') {
-      renderGraph(issues, isFree);
+      renderGraph(issues, isFree, {
+        risk: {{ risk|tojson }},
+        score: {{ score|tojson }},
+        hasIssues: {{ has_issues|tojson }},
+        scanFailed: {{ scan_failed|tojson }}
+      });
     }
+    initAiAssistant();
   });
 
   function copyPoC(btn) {
@@ -265,6 +405,234 @@
     navigator.clipboard.writeText(code);
     btn.classList.add('text-emerald-500');
     setTimeout(() => btn.classList.remove('text-emerald-500'), 2000);
+  }
+
+  function initAiAssistant() {
+    const history = document.getElementById('chat-history');
+    const form = document.getElementById('chat-form');
+    const input = document.getElementById('chat-input');
+    const send = document.getElementById('chat-send');
+    const status = document.getElementById('chat-status');
+    const counter = document.getElementById('chat-counter');
+    const upgradeBanner = document.getElementById('chat-upgrade-banner');
+    const suggestionWrap = document.getElementById('suggested-questions');
+
+    restoreChatHistory(history);
+    updateCounter(counter);
+
+    suggestionWrap.querySelectorAll('button[data-q]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        input.value = btn.getAttribute('data-q') || '';
+        input.focus();
+      });
+    });
+
+    form.addEventListener('submit', async (evt) => {
+      evt.preventDefault();
+      const message = input.value.trim();
+      if (!message) return;
+      if (isFree && chatRemaining !== null && chatRemaining <= 0) {
+        showUpgradeOnly(status, upgradeBanner, send, input);
+        return;
+      }
+
+      appendMessage(history, message, 'user');
+      input.value = '';
+      const typingNode = showTypingIndicator(history);
+      setLoadingState(send, input, status, true);
+
+      try {
+        const { ok, payload } = await sendChatRequestWithRetry(message);
+
+        if (payload.remaining !== null && payload.remaining !== undefined) {
+          chatRemaining = Number(payload.remaining);
+          updateCounter(counter);
+        }
+
+        if (!ok || payload.error) {
+          if (payload.error === 'limit_reached') {
+            showUpgradeOnly(status, upgradeBanner, send, input);
+          } else {
+            removeTypingIndicator(typingNode);
+            appendMessage(history, payload.message || payload.error || 'Assistant unavailable right now.', 'ai');
+            status.textContent = 'The assistant returned a guarded response.';
+          }
+          persistChatHistory(history);
+          return;
+        }
+
+        removeTypingIndicator(typingNode);
+        appendMessage(history, payload.response || 'No response available.', 'ai');
+        persistChatHistory(history);
+        status.textContent = 'Response generated from your report evidence.';
+      } catch (error) {
+        removeTypingIndicator(typingNode);
+        appendMessage(history, 'Vulnix-AI is temporarily unavailable. Please retry in a few seconds.', 'ai');
+        status.textContent = 'Assistant request did not complete.';
+      } finally {
+        removeTypingIndicator(typingNode);
+        setLoadingState(send, input, status, false);
+      }
+    });
+  }
+
+  async function sendChatRequest(message) {
+    const body = JSON.stringify({ message });
+    const endpoint = `/api/chat/${scanId}`;
+
+    if (typeof fetch === 'function') {
+      try {
+        const response = await fetch(endpoint, {
+          method: 'POST',
+          credentials: 'same-origin',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrfToken,
+            'X-CSRF-Token': csrfToken
+          },
+          body
+        });
+        const raw = await response.text();
+        return {
+          ok: response.ok,
+          payload: parseChatPayload(raw)
+        };
+      } catch (_fetchError) {
+        // Fallback for legacy webviews/browsers where fetch intermittently fails.
+      }
+    }
+
+    return sendChatRequestWithXhr(endpoint, body);
+  }
+
+  async function sendChatRequestWithRetry(message) {
+    try {
+      return await sendChatRequest(message);
+    } catch (_firstError) {
+      await sleep(700);
+      return sendChatRequest(message);
+    }
+  }
+
+  function sendChatRequestWithXhr(endpoint, body) {
+    return new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.open('POST', endpoint, true);
+      xhr.withCredentials = true;
+      xhr.setRequestHeader('Content-Type', 'application/json');
+      xhr.setRequestHeader('X-CSRFToken', csrfToken);
+      xhr.setRequestHeader('X-CSRF-Token', csrfToken);
+
+      xhr.onreadystatechange = () => {
+        if (xhr.readyState !== XMLHttpRequest.DONE) return;
+        resolve({
+          ok: xhr.status >= 200 && xhr.status < 300,
+          payload: parseChatPayload(xhr.responseText)
+        });
+      };
+
+      xhr.onerror = () => reject(new Error('xhr_network_failure'));
+      xhr.ontimeout = () => reject(new Error('xhr_timeout'));
+      xhr.send(body);
+    });
+  }
+
+  function parseChatPayload(raw) {
+    try {
+      return raw ? JSON.parse(raw) : {};
+    } catch (_e) {
+      return { error: 'invalid_response', message: 'AI endpoint returned a non-JSON response.' };
+    }
+  }
+
+  function sleep(ms) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
+  function showUpgradeOnly(status, upgradeBanner, send, input) {
+    upgradeBanner.classList.remove('hidden');
+    status.textContent = 'Free AI quota reached.';
+    send.disabled = true;
+    input.disabled = true;
+  }
+
+  function updateCounter(counterEl) {
+    if (!counterEl || !isFree) return;
+    counterEl.textContent = String(Math.max(0, chatRemaining || 0));
+  }
+
+  function setLoadingState(send, input, status, isLoading) {
+    send.disabled = isLoading;
+    input.disabled = isLoading;
+    if (isLoading) {
+      send.textContent = 'Thinking...';
+      status.textContent = 'Analyzing vulnerabilities and priority paths...';
+      return;
+    }
+    send.textContent = 'Send';
+    input.disabled = false;
+  }
+
+  function appendMessage(history, text, role) {
+    const wrap = document.createElement('div');
+    wrap.className = `${role === 'user' ? 'chat-message-user ml-auto max-w-[85%]' : 'chat-message-ai mr-auto max-w-[95%]'} rounded-2xl p-4 text-sm text-slate-100`;
+    wrap.innerHTML = `
+      <p class="font-black ${role === 'user' ? 'text-indigo-100' : 'text-indigo-300'} uppercase tracking-widest text-[10px] mb-2">
+        ${role === 'user' ? 'You' : 'AI Security Assistant'}
+      </p>
+      <p class="whitespace-pre-wrap leading-relaxed">${escapeHtml(text)}</p>
+    `;
+    history.appendChild(wrap);
+    history.scrollTop = history.scrollHeight;
+  }
+
+  function showTypingIndicator(history) {
+    const wrap = document.createElement('div');
+    wrap.className = 'chat-message-ai mr-auto max-w-[95%] rounded-2xl p-4 text-sm text-slate-100';
+    wrap.setAttribute('data-typing-indicator', 'true');
+    wrap.innerHTML = `
+      <p class="font-black text-indigo-300 uppercase tracking-widest text-[10px] mb-2">Vulnix-AI</p>
+      <p class="whitespace-pre-wrap leading-relaxed text-indigo-100">Vulnix-AI is typing...</p>
+    `;
+    history.appendChild(wrap);
+    history.scrollTop = history.scrollHeight;
+    return wrap;
+  }
+
+  function removeTypingIndicator(node) {
+    if (node && node.parentNode) {
+      node.parentNode.removeChild(node);
+    }
+  }
+
+  function persistChatHistory(history) {
+    const messages = Array.from(history.querySelectorAll('.chat-message-ai, .chat-message-user')).map((node) => ({
+      role: node.classList.contains('chat-message-user') ? 'user' : 'ai',
+      text: node.querySelector('p:last-child')?.textContent || ''
+    }));
+    localStorage.setItem(chatStorageKey, JSON.stringify(messages.slice(-30)));
+  }
+
+  function restoreChatHistory(history) {
+    const raw = localStorage.getItem(chatStorageKey);
+    if (!raw) return;
+    try {
+      const messages = JSON.parse(raw);
+      if (!Array.isArray(messages) || messages.length === 0) return;
+      history.innerHTML = '';
+      messages.forEach((msg) => appendMessage(history, msg.text || '', msg.role === 'user' ? 'user' : 'ai'));
+    } catch (error) {
+      localStorage.removeItem(chatStorageKey);
+    }
+  }
+
+  function escapeHtml(text) {
+    return text
+      .replaceAll('&', '&amp;')
+      .replaceAll('<', '&lt;')
+      .replaceAll('>', '&gt;')
+      .replaceAll('"', '&quot;')
+      .replaceAll("'", '&#039;');
   }
 </script>
 {% endblock %}

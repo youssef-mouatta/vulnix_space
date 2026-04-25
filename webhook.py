@@ -1,44 +1,62 @@
-import hmac
-import hashlib
-from flask import Blueprint, request, jsonify
-from utils.logger import get_logger
+import stripe
+from flask import Blueprint, jsonify, request
+
 from config import Config
-from models import db, User
+from models import User, db
+from utils.logger import get_logger
 
 logger = get_logger(__name__)
-webhook_bp = Blueprint('webhook', __name__)
+webhook_bp = Blueprint("webhook", __name__)
+
+
+def _tier_from_session(session: dict) -> str:
+    """
+    Expect Stripe Checkout Session metadata, e.g. metadata[tier]=Pro|Business
+    (configure in Stripe Dashboard or when creating the session).
+    """
+    md = session.get("metadata") or {}
+    tier = (md.get("tier") or md.get("plan") or "Pro").strip()
+    if tier not in ("Pro", "Business"):
+        return "Pro"
+    return tier
+
 
 @webhook_bp.route("/webhooks/stripe", methods=["POST"])
 def stripe_webhook():
-    payload = request.get_data()
-    sig_header = request.headers.get('Stripe-Signature')
+    payload = request.get_data(cache=False, as_text=False)
+    sig_header = request.headers.get("Stripe-Signature")
+    webhook_secret = Config.STRIPE_WEBHOOK_SECRET
 
-    if not sig_header or not Config.STRIPE_WEBHOOK_SECRET:
-        return "Missing signature or secret config", 400
+    if not sig_header or not webhook_secret:
+        return jsonify(error="Missing signature or webhook secret"), 400
 
-    # Note: In production you would use stripe python lib: 
-    # stripe.Webhook.construct_event(payload, sig_header, Config.STRIPE_WEBHOOK_SECRET)
-    
-    # We simulate handling the event payload here:
     try:
-        event = request.get_json(silent=True) or {}
-        event_type = event.get('type')
-        
-        logger.info(f"Received webhook event: {event_type}")
+        event = stripe.Webhook.construct_event(payload, sig_header, webhook_secret)
+    except ValueError:
+        logger.warning("Stripe webhook: invalid payload")
+        return jsonify(error="invalid payload"), 400
+    except stripe.error.SignatureVerificationError as exc:
+        logger.warning("Stripe webhook: signature verification failed: %s", exc)
+        return jsonify(error="invalid signature"), 400
 
-        if event_type == 'checkout.session.completed':
-            session = event['data']['object']
-            customer_email = session.get('customer_details', {}).get('email')
-            # BUG FIX: Look up by email column, not username (username != email)
+    event_type = event.get("type")
+    logger.info("Stripe webhook event: %s", event_type)
+
+    try:
+        if event_type == "checkout.session.completed":
+            session = event.get("data", {}).get("object") or {}
+            customer_email = (session.get("customer_details") or {}).get("email")
+            tier = _tier_from_session(session)
+
             if customer_email:
-                user = User.query.filter_by(email=customer_email).first()
+                user = User.query.filter_by(email=customer_email.lower()).first()
                 if user:
-                    user.tier = "Pro" # or map based on exact checkout metadata
+                    user.tier = tier
                     db.session.commit()
-                    logger.info(f"Upgraded user {user.id} to Pro")
+                    logger.info("Upgraded user %s to %s via Stripe", user.id, tier)
 
         return jsonify(success=True), 200
-
     except Exception as e:
-        logger.error(f"Webhook error: {e}")
-        return jsonify(error=str(e)), 400
+        logger.error("Stripe webhook handler error: %s", e)
+        db.session.rollback()
+        return jsonify(error=str(e)), 500

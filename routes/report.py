@@ -1,10 +1,12 @@
 import json
-from flask import Blueprint, render_template, redirect, url_for, flash, request, jsonify
+from flask import Blueprint, render_template, redirect, url_for, flash, request, jsonify, session
 from flask_login import current_user
 from models import db, ScanResult
 from ai_service import chat_about_scan
+from utils.plan_limits import apply_plan_limits
 
 report_bp = Blueprint('report', __name__)
+FREE_CHAT_LIMIT = 5
 
 # ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -55,22 +57,23 @@ def report(scan_id):
     from services.priority_engine import prioritize
     from ai_service import safe_generate, generate_summary, _format_input
 
-    issues = json.loads(scan.issues_json)
-    meta   = _get_meta(scan)
-    
-    # Sort and prioritize issues
-    issues = prioritize(issues)
-    
-    # Generate AI Insight summary using real AI pipeline
-    real_finds = [i for i in issues if i.get("classification") in ("REAL_RISK", "SECURITY_WEAKNESS")]
+    issues_full = json.loads(scan.issues_json)
+    meta = _get_meta(scan)
+
+    user_tier = current_user.tier if current_user.is_authenticated else "Free"
+    issues = prioritize(apply_plan_limits(user_tier, issues_full))
+
+    # Generate AI Insight summary using real AI pipeline (full evidence, not redacted PoCs)
+    real_finds = [
+        i for i in prioritize(issues_full)
+        if i.get("classification") in ("REAL_RISK", "SECURITY_WEAKNESS")
+    ]
     if real_finds:
         formatted_input = _format_input(real_finds)
         raw_str = json.dumps(real_finds)
         ai_summary = safe_generate(generate_summary, formatted_input, raw_str) or "Attacker may exploit identified vulnerabilities."
     else:
         ai_summary = "Secure Target Environment. No exploited paths or significant security weaknesses identified."
-
-    user_tier = current_user.tier if current_user.is_authenticated else "free"
 
     return render_template(
         "report.html",
@@ -85,7 +88,7 @@ def report(scan_id):
         scan_failed=meta.get("scan_failed", False),
         is_limited=meta.get("is_limited", False),
         has_issues=meta.get("has_issues", True),
-        user_tier=user_tier.lower()
+        user_tier=(user_tier or "Free").lower()
     )
 
 
@@ -93,11 +96,11 @@ def report(scan_id):
 def toggle_share(scan_id):
     scan = db.get_or_404(ScanResult, scan_id)
     if not current_user.is_authenticated or scan.user_id != current_user.id:
-        return {"error": "Unauthorized"}, 403
+        return jsonify(error="Unauthorized"), 403
 
     scan.is_public = not scan.is_public
     db.session.commit()
-    return {"is_public": scan.is_public, "message": "Visibility updated"}
+    return jsonify(is_public=scan.is_public, message="Visibility updated")
 
 
 @report_bp.route("/api/chat/<int:scan_id>", methods=["POST"])
@@ -118,5 +121,39 @@ def report_chat(scan_id):
         return jsonify({"error": "missing_message", "message": "A chat message is required."}), 400
 
     meta = _get_meta(scan)
-    user_tier = current_user.tier if current_user.is_authenticated else "free"
-    return jsonify(chat_about_scan(scan.url, scan.issues_json, user_message, meta=meta, user_tier=user_tier))
+    user_tier = current_user.tier if current_user.is_authenticated else "Free"
+    tier_normalized = (user_tier or "Free").strip().lower()
+    is_free = tier_normalized == "free"
+    usage_key = f"ai_chat_count_{scan_id}"
+    usage = int(session.get(usage_key, 0))
+
+    if is_free and usage >= FREE_CHAT_LIMIT:
+        return jsonify(
+            {
+                "error": "limit_reached",
+                "message": "Unlock unlimited AI Security Assistant with Pro",
+                "remaining": 0,
+                "limit": FREE_CHAT_LIMIT,
+            }
+        ), 402
+
+    issues_for_prompt = apply_plan_limits(
+        user_tier, json.loads(scan.issues_json) if scan.issues_json else []
+    )
+    result = chat_about_scan(
+        scan.url,
+        json.dumps(issues_for_prompt),
+        user_message,
+        meta=meta,
+        user_tier=user_tier,
+    )
+
+    if "error" not in result and "response" in result and is_free:
+        session[usage_key] = usage + 1
+        session.modified = True
+
+    remaining = max(0, FREE_CHAT_LIMIT - int(session.get(usage_key, 0))) if is_free else None
+    result["remaining"] = remaining
+    result["limit"] = FREE_CHAT_LIMIT if is_free else None
+    result["is_free"] = is_free
+    return jsonify(result)

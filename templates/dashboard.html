@@ -19,6 +19,7 @@
             </div>
             
             <form action="{{ url_for('scan.perform_scan') }}" method="POST" id="scan-form" onsubmit="startScanAnim()">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                 <div class="relative flex items-center group">
                     <div class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
                         <i class="fa-solid fa-link text-gray-400 group-focus-within:text-indigo-500 transition-colors text-lg"></i>
@@ -130,18 +131,22 @@
 
         <!-- Upgrade Card (Only for Free users) -->
         {% if current_user.tier != 'Pro' %}
-        <div class="mt-8 p-8 rounded-[2rem] bg-gradient-to-br from-indigo-600 to-purple-700 text-white shadow-xl relative overflow-hidden group">
+        <div class="mt-8 p-8 rounded-[3rem] bg-gradient-to-br from-indigo-600 via-indigo-700 to-purple-800 text-white shadow-2xl shadow-indigo-500/30 relative overflow-hidden group border border-white/10">
             <div class="absolute -right-6 -bottom-6 w-32 h-32 bg-white/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700"></div>
+            <div class="absolute top-0 left-0 w-full h-1 bg-white/20"></div>
+            
             <h3 class="text-xl font-black uppercase tracking-widest mb-4 flex items-center">
-                <i class="fa-solid fa-crown mr-3 text-amber-400"></i> Unlock Pro Intelligence
+                <i class="fa-solid fa-crown mr-3 text-amber-400"></i> Go Business Pro
             </h3>
-            <p class="text-sm text-indigo-100 font-medium mb-8 leading-relaxed">Detect exploit chains, access full AI analysis, and get priority fix scripts.</p>
+            <p class="text-sm text-indigo-100 font-medium mb-8 leading-relaxed">Unlock advanced API access, dedicated security support, and enterprise compliance reporting.</p>
+            
             <ul class="space-y-3 mb-10 text-[11px] font-black uppercase tracking-widest">
-                <li class="flex items-center"><i class="fa-solid fa-lock mr-2 text-indigo-300"></i> Exploit Chain Detection</li>
-                <li class="flex items-center"><i class="fa-solid fa-lock mr-2 text-indigo-300"></i> Full AI Risk Intelligence</li>
-                <li class="flex items-center"><i class="fa-solid fa-lock mr-2 text-indigo-300"></i> Priority Fix Engine</li>
+                <li class="flex items-center"><i class="fa-solid fa-check mr-2 text-indigo-300"></i> Advanced API Intelligence</li>
+                <li class="flex items-center"><i class="fa-solid fa-check mr-2 text-indigo-300"></i> Compliance Mapping (PCI/SOC2)</li>
+                <li class="flex items-center"><i class="fa-solid fa-check mr-2 text-indigo-300"></i> Dedicated Support Engineer</li>
             </ul>
-            <a href="{{ url_for('main.pricing') }}" class="block w-full py-4 bg-white text-indigo-600 rounded-2xl text-center text-xs font-black uppercase tracking-widest shadow-lg hover:bg-gray-50 transition-all hover:scale-105 active:scale-95">Upgrade to Pro</a>
+            
+            <a href="{{ url_for('main.pricing') }}" class="block w-full py-5 bg-white text-indigo-600 rounded-2xl text-center text-xs font-black uppercase tracking-widest shadow-xl hover:bg-gray-50 transition-all hover:scale-[1.03] active:scale-95 glow-hover">View Pro Plans</a>
         </div>
         {% else %}
         <!-- Pro Status Card -->

@@ -7,6 +7,7 @@ import requests
 import socket
 import threading
 import time
+import ipaddress
 from urllib.parse import urlparse
 
 # Modular Services
@@ -109,16 +110,47 @@ def _is_trusted(domain):
     if not domain: return False
     return any(domain.endswith(d) for d in TRUSTED_PLATFORMS)
 
+
+def _normalize_target(url: str):
+    if not isinstance(url, str):
+        return None, None
+    candidate = url.strip()
+    if not candidate:
+        return None, None
+    if not candidate.startswith(("http://", "https://")):
+        candidate = "https://" + candidate
+    parsed = urlparse(candidate)
+    domain = parsed.hostname
+    if not domain:
+        return None, None
+    return candidate, domain
+
+
+def _is_private_or_loopback(hostname: str) -> bool:
+    try:
+        ip = ipaddress.ip_address(hostname)
+        return ip.is_private or ip.is_loopback or ip.is_link_local
+    except ValueError:
+        return hostname in {"localhost"}
+
 # ─────────────────────────────────────────────────────────────
 # MAIN SCANNER
 # ─────────────────────────────────────────────────────────────
 
 def scan_website(url):
-    if not url.startswith("http"):
-        url = "https://" + url
+    url, domain = _normalize_target(url)
+    if not url or not domain:
+        return [_issue("Invalid Target URL", "HIGH", "Network",
+                       "The provided target URL could not be parsed.",
+                       "Use a valid public URL such as https://example.com.",
+                       "High", "REAL_RISK")], "0", "High", False, {"ip": None, "open_ports": []}
+    if _is_private_or_loopback(domain):
+        return [_issue("Private Network Target Blocked", "HIGH", "Network",
+                       "Private or local network targets are not allowed for SaaS security reasons.",
+                       "Scan a public domain or run self-hosted scanning for internal assets.",
+                       "High", "SECURITY_WEAKNESS")], "0", "High", False, {"ip": None, "open_ports": []}
 
     parsed = urlparse(url)
-    domain = parsed.hostname
 
     cached = _get_cached(domain)
     if cached:
@@ -154,14 +186,14 @@ def scan_website(url):
     if not trusted:
         try:
             # Let requests follow all redirects naturally
-            r_http = requests.get(f"http://{domain}", timeout=5, allow_redirects=True)
+            r_http = session.get(f"http://{domain}", timeout=5, allow_redirects=True)
             
             # SAFE CASE: If it eventually lands on https://, it enforces HTTPS.
             # VULNERABLE CASE: It strictly stays on http:// AND serves content (200 OK).
             if not r_http.url.startswith("https://"):
                 if r_http.status_code == 200:
                     http_vulnerable = True
-        except:
+        except requests.RequestException:
             # If the request fails entirely, port 80 is likely closed/filtered (SAFE).
             pass
 
@@ -198,7 +230,7 @@ def scan_website(url):
         ))
 
     # ─── RULE 4: Open Redirect ───
-    if redirect_result["found"] or any(p in url for p in ["redirect=", "url="]):
+    if redirect_result["found"]:
         issues.append(_issue(
             "Unvalidated URL Redirection",
             "MEDIUM", "Injection",
@@ -227,7 +259,14 @@ def scan_website(url):
 
         if is_session:
             secure_missing = not c.secure
-            httponly_missing = not c.has_nonstandard_attr('HttpOnly')
+            _rest = getattr(c, "_rest", None) or {}
+            httponly_set = isinstance(_rest, dict) and "HttpOnly" in _rest
+            if getattr(c, "has_nonstandard_attr", None):
+                try:
+                    httponly_set = httponly_set or c.has_nonstandard_attr("HttpOnly")
+                except Exception:
+                    pass
+            httponly_missing = not httponly_set
             
             if httponly_missing:
                 has_missing_httponly = True

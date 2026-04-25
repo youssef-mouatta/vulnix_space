@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{% block title %}Vulnix — AI-Powered Security Scanner{% endblock %}</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/navimg2.png') }}">
     <meta name="description" content="Vulnix is an AI-powered website security scanner that detects vulnerabilities, chains attack risks, and delivers copy-paste fixes. Fast, accurate, and built for developers.">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -81,7 +83,6 @@
                 <div class="flex">
                     <div class="flex-shrink-0 flex items-center">
                         <a href="{{ url_for('main.index') }}" class="flex items-center" aria-label="Vulnix Home">
-                            <!-- Vulnix Brand Logo SVG -->
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 60" height="42" aria-hidden="true">
                                 <defs>
                                     <linearGradient id="shieldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -93,16 +94,13 @@
                                         <stop offset="100%" style="stop-color:#c084fc;stop-opacity:1" />
                                     </linearGradient>
                                 </defs>
-                                <!-- Shield body -->
                                 <path d="M30 4 L52 12 L52 32 Q52 46 30 56 Q8 46 8 32 L8 12 Z"
                                       fill="url(#shieldGrad)" opacity="0.1"/>
                                 <path d="M30 4 L52 12 L52 32 Q52 46 30 56 Q8 46 8 32 L8 12 Z"
                                       fill="none" stroke="url(#shieldGrad)" stroke-width="2"/>
-                                <!-- V shape inside shield -->
                                 <path d="M17 16 L30 42 L43 16" fill="none"
                                       stroke="url(#vGrad)" stroke-width="4"
                                       stroke-linecap="round" stroke-linejoin="round"/>
-                                <!-- Wordmark -->
                                 <text x="60" y="42" font-family="'Outfit',sans-serif"
                                       font-size="28" font-weight="900" letter-spacing="-1"
                                       fill="currentColor" class="text-gray-900 dark:text-white">ulnix</text>
@@ -113,7 +111,9 @@
                         </a>
                     </div>
                 </div>
-                <div class="flex items-center space-x-6">
+
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex items-center space-x-6">
                     <button id="theme-toggle" type="button" class="text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 focus:outline-none rounded-xl p-2.5 transition-all">
                         <i id="theme-toggle-dark-icon" class="hidden fa-solid fa-moon"></i>
                         <i id="theme-toggle-light-icon" class="hidden fa-solid fa-sun"></i>
@@ -121,23 +121,53 @@
                     
                     {% if current_user.is_authenticated %}
                         <a href="{{ url_for('main.pricing') }}" class="nav-link text-sm font-black uppercase tracking-widest text-gray-600 dark:text-gray-400">Pricing</a>
-                        <a href="{{ url_for('main.contact') }}" class="nav-link text-sm font-black uppercase tracking-widest text-gray-600 dark:text-gray-400">Contact</a>
-                        <a href="{{ url_for('main.privacy') }}" class="nav-link text-sm font-black uppercase tracking-widest text-gray-600 dark:text-gray-400">Privacy</a>
-                        <a href="{{ url_for('main.terms') }}" class="nav-link text-sm font-black uppercase tracking-widest text-gray-600 dark:text-gray-400">Terms</a>
                         <a href="{{ url_for('user.dashboard') }}" class="text-sm font-black uppercase tracking-widest text-gray-600 dark:text-gray-400 hover:text-indigo-500 dark:hover:text-indigo-400 transition-colors">Dashboard</a>
                         <a href="{{ url_for('auth.logout') }}" class="text-sm font-black uppercase tracking-widest text-red-500/80 hover:text-red-500 transition-colors">Logout</a>
                     {% else %}
                         <a href="{{ url_for('main.pricing') }}" class="nav-link text-sm font-black uppercase tracking-widest text-gray-600 dark:text-gray-400">Pricing</a>
-                        <a href="{{ url_for('main.contact') }}" class="nav-link text-sm font-black uppercase tracking-widest text-gray-600 dark:text-gray-400">Contact</a>
-                        <a href="{{ url_for('main.privacy') }}" class="nav-link text-sm font-black uppercase tracking-widest text-gray-600 dark:text-gray-400">Privacy</a>
-                        <a href="{{ url_for('main.terms') }}" class="nav-link text-sm font-black uppercase tracking-widest text-gray-600 dark:text-gray-400">Terms</a>
                         <a href="{{ url_for('auth.login') }}" class="text-sm font-black uppercase tracking-widest text-gray-600 dark:text-gray-400 hover:text-indigo-500 transition-colors">Login</a>
                         <a href="{{ url_for('auth.register') }}" class="bg-indigo-600 text-white hover:bg-indigo-700 px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest shadow-[0_0_15px_rgba(99,102,241,0.3)] transition-all transform hover:-translate-y-0.5">Explore Intelligence</a>
                     {% endif %}
                 </div>
+
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-button" type="button" class="text-gray-500 dark:text-gray-400 p-2">
+                        <i class="fa-solid fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu (Hidden by default) -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white dark:bg-[#0a0c10] border-t border-gray-100 dark:border-white/5 p-6 space-y-4">
+            {% if current_user.is_authenticated %}
+                <a href="{{ url_for('main.pricing') }}" class="block text-sm font-black uppercase tracking-widest text-gray-600 dark:text-gray-400">Pricing</a>
+                <a href="{{ url_for('user.dashboard') }}" class="block text-sm font-black uppercase tracking-widest text-gray-600 dark:text-gray-400">Dashboard</a>
+                <a href="{{ url_for('auth.logout') }}" class="block text-sm font-black uppercase tracking-widest text-red-500/80">Logout</a>
+            {% else %}
+                <a href="{{ url_for('main.pricing') }}" class="block text-sm font-black uppercase tracking-widest text-gray-600 dark:text-gray-400">Pricing</a>
+                <a href="{{ url_for('auth.login') }}" class="block text-sm font-black uppercase tracking-widest text-gray-600 dark:text-gray-400">Login</a>
+                <a href="{{ url_for('auth.register') }}" class="block bg-indigo-600 text-white px-6 py-3 rounded-xl text-center text-xs font-black uppercase tracking-widest">Explore Intelligence</a>
+            {% endif %}
+            <div class="pt-4 border-t border-gray-100 dark:border-white/5 flex justify-between items-center">
+                <button id="theme-toggle-mobile" type="button" class="text-gray-500 dark:text-gray-400 flex items-center space-x-2">
+                    <i class="fa-solid fa-circle-half-stroke"></i>
+                    <span class="text-xs font-black uppercase tracking-widest">Switch Theme</span>
+                </button>
             </div>
         </div>
     </nav>
+
+    <script>
+        const menuBtn = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        if (menuBtn) {
+            menuBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+        }
+    </script>
 
     <!-- Flash Messages container -->
     <div class="max-w-7xl mx-auto px-4 pt-4">

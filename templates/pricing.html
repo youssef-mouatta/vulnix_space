@@ -22,10 +22,10 @@
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-24">
             <!-- Free Plan -->
-            <div class="bg-white dark:bg-white/[0.02] border border-gray-200 dark:border-white/10 p-10 rounded-[3rem] flex flex-col hover:border-indigo-500/30 transition-all group backdrop-blur-xl">
+            <div class="bg-white dark:bg-white/[0.02] border border-gray-200 dark:border-white/10 p-8 sm:p-10 rounded-[3rem] flex flex-col hover:border-indigo-500/30 transition-all group backdrop-blur-xl">
                 <div class="mb-8">
                     <h3 class="text-xl font-black text-gray-900 dark:text-white mb-2 uppercase tracking-widest">Free</h3>
-                    <p class="text-gray-500 text-sm font-bold uppercase tracking-widest opacity-60">Reconnaissance</p>
+                    <p class="text-gray-500 text-sm font-bold uppercase tracking-widest opacity-60">Security Core</p>
                 </div>
                 <div class="text-5xl font-black text-gray-900 dark:text-white mb-8">$0<span class="text-sm text-gray-400 font-bold ml-1 uppercase">/mo</span></div>
                 
@@ -34,7 +34,13 @@
                         <div class="w-6 h-6 rounded-full bg-indigo-500/10 flex items-center justify-center mr-3">
                             <i class="fa-solid fa-check text-indigo-500 text-[10px]"></i>
                         </div>
-                        Basic Vulnerability Scan
+                        AI Risk Interpretation
+                    </div>
+                    <div class="flex items-center text-sm font-bold text-gray-600 dark:text-gray-400">
+                        <div class="w-6 h-6 rounded-full bg-indigo-500/10 flex items-center justify-center mr-3">
+                            <i class="fa-solid fa-check text-indigo-500 text-[10px]"></i>
+                        </div>
+                        Full Exploit Path Detection
                     </div>
                     <div class="flex items-center text-sm font-bold text-gray-600 dark:text-gray-400">
                         <div class="w-6 h-6 rounded-full bg-indigo-500/10 flex items-center justify-center mr-3">
@@ -42,45 +48,21 @@
                         </div>
                         OWASP Top 10 Mapping
                     </div>
-                    <div class="flex items-center text-sm font-bold text-gray-400/30 italic">
-                        <div class="w-6 h-6 rounded-full bg-gray-500/10 flex items-center justify-center mr-3">
-                            <i class="fa-solid fa-lock text-gray-400 text-[10px]"></i>
-                        </div>
-                        Exploit Path Correlation
-                    </div>
-                    <div class="flex items-center text-sm font-bold text-gray-400/30 italic">
-                        <div class="w-6 h-6 rounded-full bg-gray-500/10 flex items-center justify-center mr-3">
-                            <i class="fa-solid fa-lock text-gray-400 text-[10px]"></i>
-                        </div>
-                        AI Remediation Engine
-                    </div>
                 </div>
 
                 <a href="{{ url_for('auth.register') }}" class="w-full py-5 bg-gray-100 dark:bg-white/5 text-gray-900 dark:text-white rounded-2xl text-center text-xs font-black uppercase tracking-widest hover:bg-gray-200 dark:hover:bg-white/10 transition-all">Get Started</a>
             </div>
 
             <!-- Pro Plan -->
-            <div class="bg-gradient-to-br from-indigo-600 to-indigo-800 p-10 rounded-[3rem] flex flex-col shadow-2xl shadow-indigo-500/20 relative overflow-hidden group transform hover:-translate-y-2 transition-all">
+            <div class="bg-gradient-to-br from-indigo-600 to-indigo-800 p-8 sm:p-10 rounded-[3rem] flex flex-col shadow-2xl shadow-indigo-500/20 relative overflow-hidden group transform hover:-translate-y-2 transition-all">
                 <div class="absolute -top-12 -right-12 w-48 h-48 bg-white/10 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-700"></div>
                 
-                <div class="bg-white/20 backdrop-blur-md text-white text-[10px] font-black px-5 py-1.5 rounded-full w-max mb-8 uppercase tracking-widest">Most Popular Intelligence</div>
+                <div class="bg-white/20 backdrop-blur-md text-white text-[10px] font-black px-5 py-1.5 rounded-full w-max mb-8 uppercase tracking-widest">For Professionals</div>
                 <h3 class="text-xl font-black text-white mb-2 uppercase tracking-widest">Pro</h3>
-                <p class="text-indigo-100/60 text-sm font-bold uppercase tracking-widest mb-8">Security Professional</p>
+                <p class="text-indigo-100/60 text-sm font-bold uppercase tracking-widest mb-8">Advanced Intelligence</p>
                 <div class="text-5xl font-black text-white mb-10">$7<span class="text-sm text-indigo-200 font-bold ml-1 uppercase">/mo</span></div>
                 
                 <div class="space-y-5 mb-12 flex-grow">
-                    <div class="flex items-center text-sm font-bold text-white">
-                        <div class="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center mr-3">
-                            <i class="fa-solid fa-check text-indigo-200 text-[10px]"></i>
-                        </div>
-                        Full Exploit Path Detection
-                    </div>
-                    <div class="flex items-center text-sm font-bold text-white">
-                        <div class="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center mr-3">
-                            <i class="fa-solid fa-check text-indigo-200 text-[10px]"></i>
-                        </div>
-                        AI Risk Interpretation
-                    </div>
                     <div class="flex items-center text-sm font-bold text-white">
                         <div class="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center mr-3">
                             <i class="fa-solid fa-check text-indigo-200 text-[10px]"></i>
@@ -93,16 +75,22 @@
                         </div>
                         Executive PDF Intelligence
                     </div>
+                    <div class="flex items-center text-sm font-bold text-white">
+                        <div class="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center mr-3">
+                            <i class="fa-solid fa-check text-indigo-200 text-[10px]"></i>
+                        </div>
+                        History Export (JSON/CSV)
+                    </div>
                 </div>
 
                 <a href="https://buy.lemonsqueezy.com/your-pro-link" class="w-full py-5 bg-white text-indigo-600 rounded-2xl text-center text-xs font-black uppercase tracking-widest shadow-xl hover:bg-gray-50 transition-all hover:scale-[1.02]">Upgrade to Pro</a>
             </div>
 
             <!-- Business Plan -->
-            <div class="bg-white dark:bg-white/[0.02] border-2 border-purple-500/20 p-10 rounded-[3rem] flex flex-col hover:border-purple-500/50 transition-all group backdrop-blur-xl">
+            <div class="bg-white dark:bg-white/[0.02] border-2 border-purple-500/20 p-8 sm:p-10 rounded-[3rem] flex flex-col hover:border-purple-500/50 transition-all group backdrop-blur-xl">
                 <div class="mb-8">
                     <h3 class="text-xl font-black text-gray-900 dark:text-white mb-2 uppercase tracking-widest">Business</h3>
-                    <p class="text-gray-500 text-sm font-bold uppercase tracking-widest opacity-60">Enterprise Surface</p>
+                    <p class="text-gray-500 text-sm font-bold uppercase tracking-widest opacity-60">Enterprise Grade</p>
                 </div>
                 <div class="text-5xl font-black text-gray-900 dark:text-white mb-8">$20<span class="text-sm text-gray-400 font-bold ml-1 uppercase">/mo</span></div>
                 
@@ -124,12 +112,6 @@
                             <i class="fa-solid fa-check text-purple-500 text-[10px]"></i>
                         </div>
                         Dedicated Support Engineer
-                    </div>
-                    <div class="flex items-center text-sm font-bold text-gray-600 dark:text-gray-400">
-                        <div class="w-6 h-6 rounded-full bg-purple-500/10 flex items-center justify-center mr-3">
-                            <i class="fa-solid fa-check text-purple-500 text-[10px]"></i>
-                        </div>
-                        Unlimited Team Collaborators
                     </div>
                 </div>
 

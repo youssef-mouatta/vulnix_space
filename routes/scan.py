@@ -1,5 +1,4 @@
 import json
-from copy import deepcopy
 from flask import Blueprint, request, redirect, url_for, flash
 from flask_login import login_required, current_user
 from models import db, ScanResult
@@ -10,13 +9,6 @@ from payments import PaymentService
 
 logger = get_logger(__name__)
 scan_bp = Blueprint('scan', __name__)
-
-def apply_plan_limits(user_tier, issues):
-    """
-    SaaS Monetization Hook: We save full results to allow for 'Trial' views 
-    and easier upgrades, but gating is enforced in the UI.
-    """
-    return deepcopy(issues)
 
 @scan_bp.route("/scan", methods=["POST"])
 @login_required
@@ -35,18 +27,16 @@ def perform_scan():
 
     issues, score, risk_level, is_limited, network_info = scan_website(url)
 
-    # 💰 Apply Monetization Limits
-    monetized_issues = apply_plan_limits(current_user.tier, issues)
-
+    # Store full findings so upgrades unlock historical reports; tier gating is in report view.
     # Detect scan failures
     failed = is_scan_failed(issues)
-    real_vulns = has_real_issues(monetized_issues)
+    real_vulns = has_real_issues(issues)
 
     new_scan = ScanResult(
         user_id=current_user.id,
         url=url,
         score=score,
-        issues_json=json.dumps(monetized_issues),
+        issues_json=json.dumps(issues),
         explanation_json=json.dumps({
             "scan_failed": failed,
             "is_limited":  is_limited,
@@ -59,7 +49,7 @@ def perform_scan():
     db.session.commit()
 
     logger.info(
-        f"User {current_user.id} ({current_user.tier}) scanned {url} | issues={len(monetized_issues)}"
+        f"User {current_user.id} ({current_user.tier}) scanned {url} | issues={len(issues)}"
     )
 
     return redirect(url_for('report.report', scan_id=new_scan.id))

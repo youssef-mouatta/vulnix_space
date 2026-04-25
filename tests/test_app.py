@@ -1,5 +1,9 @@
 import json
+import os
 import unittest
+
+os.environ["GOOGLE_API_KEY"] = ""
+os.environ.setdefault("FLASK_ENV", "development")
 
 from werkzeug.security import generate_password_hash
 
@@ -11,7 +15,9 @@ Config.TESTING = True
 from app import create_app
 from models import ScanResult, User, db
 import routes.report as report_module
-from routes.scan import apply_plan_limits
+import scanner as scanner_module
+import ai_service as ai_module
+from utils.plan_limits import apply_plan_limits
 
 
 class VulnixAppTests(unittest.TestCase):
@@ -28,6 +34,7 @@ class VulnixAppTests(unittest.TestCase):
 
             user = User(
                 username="tester",
+                email="tester@example.com",
                 password=generate_password_hash("pass123", method="pbkdf2:sha256"),
                 tier="Free",
             )
@@ -109,6 +116,24 @@ class VulnixAppTests(unittest.TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.get_json()["error"], "missing_message")
 
+    def test_free_tier_chat_limit_is_enforced(self):
+        self.login()
+        original_chat = report_module.chat_about_scan
+        report_module.chat_about_scan = lambda *args, **kwargs: {"response": "RISK: test\nIMPACT: test\nFIX: test\nPRIORITY: Fix Soon"}
+        try:
+            for _ in range(5):
+                ok = self.client.post(f"/api/chat/{self.scan_id}", json={"message": "what first"})
+                self.assertEqual(ok.status_code, 200)
+                self.assertIn("remaining", ok.get_json())
+
+            limited = self.client.post(f"/api/chat/{self.scan_id}", json={"message": "one more"})
+            self.assertEqual(limited.status_code, 402)
+            payload = limited.get_json()
+            self.assertEqual(payload["error"], "limit_reached")
+            self.assertEqual(payload["remaining"], 0)
+        finally:
+            report_module.chat_about_scan = original_chat
+
     def test_toggle_share_works_for_owner(self):
         self.login()
         response = self.client.post(f"/api/share/{self.scan_id}")
@@ -131,6 +156,68 @@ class VulnixAppTests(unittest.TestCase):
         self.assertEqual(free_view[0]["poc"], "Upgrade to Business for PoC")
         self.assertEqual(business_view[0]["poc"], "real-poc")
         self.assertEqual(issues[0]["poc"], "real-poc")
+
+    def test_scanner_blocks_private_target(self):
+        issues, score, risk, _, _ = scanner_module.scan_website("http://127.0.0.1")
+        self.assertEqual(score, "0")
+        self.assertEqual(risk, "High")
+        self.assertEqual(issues[0]["name"], "Private Network Target Blocked")
+
+    def test_detect_chains_recognizes_current_issue_names(self):
+        original_simulate_xss = scanner_module.simulate_xss
+        original_check_sensitive_files = scanner_module.check_sensitive_files
+        original_check_open_redirect = scanner_module.check_open_redirect
+        original_detect_chains = scanner_module.detect_chains
+        original_probe = scanner_module.probe_network_info
+        original_session = scanner_module.requests.Session
+
+        class Cookie:
+            name = "sessionid"
+            secure = False
+            _rest = {}
+
+            def has_nonstandard_attr(self, _):
+                return False
+
+        class FakeResponse:
+            def __init__(self):
+                self.url = "https://example.com"
+                self.status_code = 200
+                self.headers = {"Content-Type": "text/html"}
+                self.text = "<html>ok</html>"
+
+        class FakeSession:
+            def __init__(self):
+                self.headers = {}
+                self.cookies = [Cookie()]
+
+            def get(self, *_args, **_kwargs):
+                return FakeResponse()
+
+        scanner_module.simulate_xss = lambda *_a, **_k: {"level": "medium", "evidence": "<script>"}
+        scanner_module.check_sensitive_files = lambda *_a, **_k: []
+        scanner_module.check_open_redirect = lambda *_a, **_k: {"found": False}
+        scanner_module.detect_chains = original_detect_chains
+        scanner_module.probe_network_info = lambda *_a, **_k: {"ip": None, "open_ports": []}
+        scanner_module.requests.Session = FakeSession
+        scanner_module._cache.clear()
+        try:
+            issues, *_ = scanner_module.scan_website("https://example.com")
+            names = [i["name"] for i in issues]
+            self.assertIn("Injection -> Cookie Theft -> Session Hijack", names)
+        finally:
+            scanner_module.simulate_xss = original_simulate_xss
+            scanner_module.check_sensitive_files = original_check_sensitive_files
+            scanner_module.check_open_redirect = original_check_open_redirect
+            scanner_module.detect_chains = original_detect_chains
+            scanner_module.probe_network_info = original_probe
+            scanner_module.requests.Session = original_session
+
+    def test_ai_validate_output_requires_structured_findings(self):
+        bad = "RISK: x\nFIX: y"
+        self.assertFalse(ai_module.validate_output(bad, "[]", is_findings=True))
+        good = "RISK: x\nIMPACT: y\nFIX: z\nPRIORITY: Fix Soon"
+        self.assertTrue(ai_module.validate_output(good, "[]", is_findings=True))
 
 
 if __name__ == "__main__":

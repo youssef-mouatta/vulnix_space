@@ -30,6 +30,8 @@ def clean_output(text: str) -> str:
     return text.strip()
 
 def validate_output(text: str, issues_json_str: str, is_findings: bool = False) -> bool:
+    if not isinstance(text, str) or not text.strip():
+        return False
     forbidden = ["database", "credentials", "full system", "complete takeover", "server access"]
     text_lower = text.lower()
     issues_lower = issues_json_str.lower()
@@ -40,7 +42,8 @@ def validate_output(text: str, issues_json_str: str, is_findings: bool = False) 
             
     # For findings format, make sure Risk and Fix exist
     if is_findings:
-        if "Risk:" not in text or "Fix:" not in text:
+        required = ("risk:", "impact:", "fix:", "priority:")
+        if not all(label in text_lower for label in required):
             return False
             
     return True
@@ -56,7 +59,7 @@ def safe_generate(func, input_data, raw_data_str):
     On 503 overload errors the system falls through to cheaper/more available models
     before giving up and returning None.
     """
-    is_findings = (func.__name__ == 'generate_findings')
+    is_findings = func.__name__ in {'generate_findings', 'generate_chat_findings'}
     models_to_try = [PRIMARY_MODEL] + FALLBACK_MODELS
 
     for model_name in models_to_try:
@@ -93,11 +96,64 @@ def _format_input(issues):
         })
     return json.dumps(formatted)
 
+
+def _parse_issues(issues_json):
+    try:
+        issues = json.loads(issues_json) if isinstance(issues_json, str) else (issues_json or [])
+        if isinstance(issues, list):
+            return issues
+    except (TypeError, ValueError, json.JSONDecodeError):
+        pass
+    return []
+
+
+def _build_chat_evidence(issues):
+    evidence = []
+    for issue in issues:
+        evidence.append(
+            {
+                "name": issue.get("name", "Unknown finding"),
+                "severity": issue.get("severity", "Unknown"),
+                "category": issue.get("category", "Uncategorized"),
+                "impact": issue.get("impact", "No impact details"),
+                "fix": issue.get("fix", "No remediation provided"),
+                "classification": issue.get("classification", "Unknown"),
+            }
+        )
+    return json.dumps(evidence)
+
+
+def generate_chat_findings(prompt_payload: dict, model_name=PRIMARY_MODEL):
+    prompt = (
+        "Role: Senior Application Security Consultant.\n"
+        "You are answering questions about one scan report using ONLY the provided evidence.\n"
+        "Your response MUST follow this exact structure:\n"
+        "RISK: <what is realistically dangerous>\n"
+        "IMPACT: <what an attacker can achieve based on evidence>\n"
+        "FIX: <clear implementation steps>\n"
+        "PRIORITY: <Fix Now | Fix Soon | Monitor>\n\n"
+        "Rules:\n"
+        "- Evidence-only conclusions. If data is insufficient, state that explicitly.\n"
+        "- Never claim catastrophic compromise without direct evidence.\n"
+        "- No fear language, no speculation, no unsupported chain claims.\n"
+        "- Keep concise and actionable.\n\n"
+        f"Target: {prompt_payload.get('url', 'unknown')}\n"
+        f"User question: {prompt_payload.get('question', '')}\n"
+        "Report evidence:\n"
+        f"{prompt_payload.get('evidence', '[]')}"
+    )
+    if not client:
+        return "AI analysis unavailable"
+    response = client.models.generate_content(model=model_name, contents=prompt)
+    return clean_output(response.text)
+
 def generate_summary(formatted_issues, model_name=PRIMARY_MODEL):
     prompt = (
-        "Write a direct, realistic executive summary (1-2 sentences) of the security status based ONLY on these issues.\n"
+        "Role: Senior Security Researcher.\n"
+        "Write a direct, evidence-based executive summary (1-2 sentences) of the security status based ONLY on these issues.\n"
         "State the primary risk clearly. Do NOT use generic phrases like 'may exploit' or 'could be vulnerable'.\n"
-        "Do NOT invent a 'full system takeover'. Focus on the actual data or session impact.\n"
+        "Do NOT invent a 'full system takeover' or exaggerate impact without proof.\n"
+        "FORBIDDEN PHRASES: 'may be exploited', 'could possibly', 'generic wording'.\n"
         "Issues:\n" + formatted_issues
     )
     if not client:
@@ -121,7 +177,7 @@ def generate_chain(formatted_issues, model_name=PRIMARY_MODEL):
         "Return real exploit chain only based on these issues.\n"
         "Format: A → B → C\n"
         "If none exist: return 'None'.\n"
-        "Use conservative phrasing (e.g. 'could enable'). DO NOT invent chains.\n\n"
+        "Use conservative phrasing (e.g. 'enables'). DO NOT invent chains.\n\n"
         "Issues:\n" + formatted_issues
     )
     if not client:
@@ -131,19 +187,16 @@ def generate_chain(formatted_issues, model_name=PRIMARY_MODEL):
 
 def generate_findings(formatted_issues, model_name=PRIMARY_MODEL):
     prompt = (
-        "STRICT FORMAT:\n"
-        "[Severity]\n\n"
-        "Issue Name\n\n"
-        "Impact:\n"
-        "(1 sentence explaining real-world consequence based ONLY on verified data. No 'may' or 'possibly'.)\n\n"
-        "Fix:\n"
-        "(short, direct config/header fix instruction)\n\n"
-        "Confidence:\n"
-        "(Low, Medium, or High)\n\n"
+        "Role: Senior Security Auditor.\n"
+        "STRICT FORMAT FOR EACH VULNERABILITY:\n"
+        "1. Risk: (Explain exactly what can happen based on the technical flaw. No vague text.)\n"
+        "2. Impact: (Explain the real-world consequence: data theft, session hijack, etc.)\n"
+        "3. Fix: (Give a clear, direct developer action.)\n\n"
+        "FORBIDDEN PHRASES: 'may be exploited', 'possibly', 'could be'.\n\n"
         "RULES:\n"
         "* Only use provided data\n"
-        "* Do NOT invent database leaks or full system takeover\n"
-        "* Use strong, direct language\n\n"
+        "* Use strong, direct, factual language\n"
+        "* If data is insufficient for a chain, state it clearly\n\n"
         "Data:\n" + formatted_issues
     )
     if not client:
@@ -172,31 +225,39 @@ def get_scan_summary(url: str, issues_json: str, meta: dict, user_tier: str = "f
     chain = safe_generate(generate_chain, formatted_input, raw_str) or "None"
     findings = safe_generate(generate_findings, formatted_input, raw_str) or "Risk analysis incomplete."
 
-    tier = "PRO" if (user_tier or "free").lower() in ("business", "pro") else "FREE"
-
-    output = f"AI Summary\n{summary}\n\n"
-    output += f"Fix First\n{priority}\n\n"
-    output += f"Exploit Chain\n{chain}\n\n"
-    output += f"Findings\n{findings}\n\n"
-
-    if tier == "FREE":
-        output += "🔒 Full exploit chain hidden\n🔒 Advanced analysis available\n\nUpgrade to Pro to unlock complete security insights"
-        
-    return {"response": output.strip()}
+    combined = "\n\n".join(
+        [
+            f"Summary:\n{summary}",
+            f"Top remediation focus:\n{priority}",
+            f"Exploit chain perspective:\n{chain}",
+            f"Structured findings:\n{findings}",
+        ]
+    )
+    return {
+        "response": combined.strip(),
+        "summary": summary,
+        "priority": priority,
+        "chain": chain,
+        "findings": findings,
+    }
 
 def chat_about_scan(url: str, issues_json: str, user_message: str, meta: dict = None, user_tier: str = "free"):
-    prompt = (
-        f"Exploit Analysis Context for {url}. Evidence: {issues_json}. Inquiry: {user_message}. "
-        "Answer concisely using only evidence. Use conservative language and do not hallucinate."
-    )
+    issues = _parse_issues(issues_json)
+    if not issues:
+        return {"response": "I do not have enough verified findings in this scan to answer safely yet."}
+    evidence = _build_chat_evidence(issues)
+    raw_str = json.dumps(issues)
+    payload = {"url": url, "question": user_message, "evidence": evidence}
     try:
-        if not client:
-            return {"response": "AI analysis unavailable"}
-        response = client.models.generate_content(model=PRIMARY_MODEL, contents=prompt)
-        # We can also validate chat output
-        if not validate_output(response.text, issues_json):
+        response_text = safe_generate(generate_chat_findings, payload, raw_str)
+        if not response_text:
+            return {"response": "I cannot verify a safe answer from the available scan evidence."}
+        if not validate_output(response_text, raw_str):
             return {"response": "I cannot verify that claim based on the detected evidence."}
-        return {"response": clean_output(response.text)}
+        for label in ("RISK:", "IMPACT:", "FIX:", "PRIORITY:"):
+            if label not in response_text:
+                return {"response": "I cannot produce a verified structured answer for this question yet."}
+        return {"response": response_text}
     except Exception as exc:
         logger.error(f"AI Chat Error: {exc}")
         return {"error": str(exc)}
