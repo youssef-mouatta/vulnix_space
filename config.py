@@ -4,11 +4,11 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Dev-only default; production refuses to start with this value (see create_app).
-_DEFAULT_DEV_SECRET = "9fK#2Lm@Xz91!QaP$R8vNw#SecureVulnix2026"
+SECRET_KEY = "9fK#2Lm@Xz91!QaP$R8vNw#SecureVulnix20269fK#2Lm@Xz91!QaP$R8vNw#SecureVulnix2026"
 
 
 class Config:
-    SECRET_KEY = os.getenv("SECRET_KEY", _DEFAULT_DEV_SECRET)
+    SECRET_KEY = os.getenv("SECRET_KEY", SECRET_KEY)
     TESTING = False
 
     database_url = os.getenv("DATABASE_URL", "sqlite:///database.db")
