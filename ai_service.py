@@ -15,10 +15,10 @@ else:
     logger.warning("GOOGLE_API_KEY not configured. AI functions will fail.")
 
 # Primary model with ordered fallbacks for 503 overload situations
-PRIMARY_MODEL = "gemini-2.5-flash"
+PRIMARY_MODEL = "gemini-2.0-flash"
 FALLBACK_MODELS = [
-    "gemini-2.0-flash",
     "gemini-1.5-flash",
+    "gemini-1.5-pro",
 ]
 
 def clean_output(text: str) -> str:
@@ -32,7 +32,8 @@ def clean_output(text: str) -> str:
 def validate_output(text: str, issues_json_str: str, is_findings: bool = False) -> bool:
     if not isinstance(text, str) or not text.strip():
         return False
-    forbidden = ["database", "credentials", "full system", "complete takeover", "server access"]
+    # Loosened forbidden words to allow helpful technical explanations
+    forbidden = ["full system control", "complete server takeover", "total root access"]
     text_lower = text.lower()
     issues_lower = issues_json_str.lower()
     

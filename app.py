@@ -93,6 +93,10 @@ def create_app(config_object=None):
 
     csrf.exempt(stripe_webhook)
 
+    @app.route('/favicon.ico')
+    def favicon():
+        return '', 204
+
     return app
 
 

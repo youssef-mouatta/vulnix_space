@@ -209,12 +209,14 @@ def scan_website(url):
 
     # ─── RULE 5: Sensitive File Exposure ───
     for f in exposed_files:
+        filename = f.lstrip('/')
         issues.append(_issue(
-            "Sensitive Data Source Exposed",
+            f"Exposed Configuration: {filename}",
             "HIGH", "Exposure",
-            "Server configuration files or backups are publicly accessible.",
-            "Restrict access to sensitive files via server config.",
+            f"Sensitive file '{filename}' was found publicly accessible on the server.",
+            "Restrict access to sensitive files via server configuration (.htaccess, nginx.conf, etc.) or remove them.",
             "High", "REAL_RISK",
+            poc=f"{f}",
             owasp="A05"
         ))
 
