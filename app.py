@@ -42,12 +42,21 @@ def create_app(config_object=None):
         from sqlalchemy import text
 
         try:
-            if "postgresql" in str(db.engine.url):
-                db.session.execute(
-                    text('ALTER TABLE "user" ALTER COLUMN password TYPE VARCHAR(255);')
-                )
+            if db.engine.url.drivername.startswith("postgresql"):
+                # 1. Fix password length
+                db.session.execute(text('ALTER TABLE "user" ALTER COLUMN password TYPE VARCHAR(255);'))
+                
+                # 2. Add missing User columns
+                db.session.execute(text('ALTER TABLE "user" ADD COLUMN IF NOT EXISTS tier VARCHAR(20) DEFAULT \'Free\';'))
+                db.session.execute(text('ALTER TABLE "user" ADD COLUMN IF NOT EXISTS api_key VARCHAR(100) UNIQUE;'))
+                db.session.execute(text('ALTER TABLE "user" ADD COLUMN IF NOT EXISTS email VARCHAR(255) UNIQUE;'))
+                
+                # 3. Add missing ScanResult columns
+                db.session.execute(text('ALTER TABLE scan_result ADD COLUMN IF NOT EXISTS is_public BOOLEAN DEFAULT FALSE;'))
+                db.session.execute(text('ALTER TABLE scan_result ADD COLUMN IF NOT EXISTS explanation_json TEXT;'))
+                
                 db.session.commit()
-                logger.info("Database migration: expanded password column (Postgres).")
+                logger.info("Database migration: verified and updated schema (Postgres).")
         except Exception as e:
             db.session.rollback()
             logger.info("Database migration skipped or already applied: %s", e)
