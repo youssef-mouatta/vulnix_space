@@ -41,7 +41,7 @@ def assert_production_safe(config_class):
     if config_class is not ProductionConfig:
         return
     secret = (os.getenv("SECRET_KEY") or "").strip()
-    if not secret or secret == _DEFAULT_DEV_SECRET:
+    if not secret or secret == SECRET_KEY:
         raise RuntimeError(
             "FLASK_ENV=production requires SECRET_KEY to be set to a strong, unique value "
             "(not the development placeholder)."
